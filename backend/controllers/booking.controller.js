@@ -1,5 +1,5 @@
 import { Booking } from "../Models/booking.model.js";
-import { User } from "../Models/user.model.js";
+import  User  from "../Models/user.model.js";
 import { Driver } from "../Models/driver.model.js";
 
 // ✅ Student books a ride
@@ -21,9 +21,8 @@ export const bookRide = async (req, res) => {
       },
     });
 
-    await booking.save();
-
     const user = await User.findById(req.userId).select("-password");
+    await booking.save();
 
     return res.status(201).json({
       success: true,
@@ -80,9 +79,9 @@ export const acceptBooking = async (req, res) => {
 
     booking.driverId = driver._id;
     booking.status = "confirmed";
-    await booking.save();
 
     driver.status = "on-trip";
+    await booking.save();
     await driver.save();
 
     return res.status(200).json({
@@ -103,8 +102,8 @@ export const acceptBooking = async (req, res) => {
 // ✅ Reject booking
 export const rejectBooking = async (req, res) => {
   try {
-    const { bookingId } = req.body;
-    const booking = await Booking.findById(bookingId);
+    const { id } = req.params;
+    const booking = await Booking.findById(id);
 
     if (!booking) {
       return res.status(404).json({ success: false, msg: "Booking not found" });
@@ -123,9 +122,9 @@ export const rejectBooking = async (req, res) => {
 // ✅ Cancel ride (User cancels)
 export const cancelRide = async (req, res) => {
   try {
-    const { bookingId } = req.body;
+    const { id } = req.params;
 
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(id);
     if (!booking) {
       return res.status(404).json({ success: false, msg: "Booking not found" });
     }
@@ -154,8 +153,8 @@ export const cancelRide = async (req, res) => {
 // ✅ Mark booking as complete (Driver only)
 export const completeRide = async (req, res) => {
   try {
-    const { bookingId } = req.body;
-    const booking = await Booking.findById(bookingId);
+    const { id } = req.body;
+    const booking = await Booking.findById(id);
     const driver = await Driver.findById(booking.driverId);
 
     if(!driver){
@@ -173,9 +172,9 @@ export const completeRide = async (req, res) => {
     }
 
     booking.status = "completed";
-    await booking.save();
-
     driver.status = "available";
+
+    await booking.save();
     await driver.save();
 
     return res.status(200).json({
@@ -192,13 +191,9 @@ export const completeRide = async (req, res) => {
 // ✅ Get confirmed driver details for a ride
 export const getConfirmedDriverDetails = async (req, res) => {
   try {
-    const { bookingId } = req.body;
+    const { id } = req.body;
 
-    if (!bookingId) {
-      return res.status(400).json({ success: false, msg: "bookingId is required" });
-    }
-
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(id);
     if (!booking) {
       return res.status(404).json({ success: false, msg: "Booking not found" });
     }
@@ -240,3 +235,11 @@ export const getPendingBookings = async (req, res) => {
     return res.status(500).json({ success: false, msg: "Error fetching pending bookings" });
   }
 };
+
+export const getAllBooking = async(req, res)=>{
+
+}
+
+export const getAllBookingByUser = async(req, res)=>{
+  
+}

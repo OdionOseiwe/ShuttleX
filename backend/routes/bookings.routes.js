@@ -1,13 +1,23 @@
-import express from "express"
-const router = express.Router()
-import {protect} from '../middleware/protect.js'
-import {bookRide, acceptBooking, cancelRide, completeRide, getPendingBookings, } from '../controllers/booking.controller.js'
+import express from "express";
+const router = express.Router();
+import { protect } from "../middleware/protect.js";
+import {
+  bookRide,
+  acceptBooking,
+  cancelRide,
+  rejectBooking,
+  completeRide,
+  getPendingBookings,
+  getConfirmedDriverDetails
+} from "../controllers/booking.controller.js";
 
-router.get('/get-pending-bookings',protect,getPendingBookings);
+router.get("/bookings/pending", protect, getPendingBookings);
+router.get("/bookings/:id/driver", protect, getConfirmedDriverDetails);
 
-router.post('/book-ride',protect,bookRide);
-router.post('/accept-booking',protect,acceptBooking);
-router.post('/cancel-ride',protect,cancelRide);
-router.post('/complete-ride',protect,completeRide);
+router.post("/bookings", protect, bookRide);
+router.patch("/bookings/:id/accept", protect, acceptBooking);
+router.patch("/bookings/:id/reject", protect, rejectBooking);
+router.patch("/bookings/:id/cancel", protect, cancelRide);
+router.patch("/bookings/:id/complete", protect, completeRide);
 
-export default router // connected to server.js
+export default router;

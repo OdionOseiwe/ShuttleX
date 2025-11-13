@@ -1,4 +1,4 @@
-import { User } from "../models/User.model.js";
+import  User  from "../models/User.model.js";
 import { Driver } from "../Models/driver.model.js";
 import { verifyNIN } from "../utils/MockNINDataAndVerifiyNIN.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
@@ -31,13 +31,13 @@ export const signUp = async (req, res) => {
       mobileNumber,
       role,
     });
-    await user.save();
 
     //  If driver, verify NIN and register driver profile
     if (role === "driver") {
-      const ninResult = verifyNIN(nin);
-
-      if (!ninResult.verified) {
+      const ninResult = verifyNIN(nin.toString(), name);
+      console.log(ninResult);
+      
+      if (ninResult === undefined) {
         return res.status(404).json({ success: false, msg: "Invalid NIN" });
       }
 
@@ -54,7 +54,8 @@ export const signUp = async (req, res) => {
 
     // Generate token
     generateTokenAndSetCookie(res, user._id);
-
+    await user.save();
+    
     return res.status(201).json({
       success: true,
       msg: "User created successfully",
@@ -110,14 +111,14 @@ export const login = async (req, res) => {
 // ✅ Approve Driver (Admin only)
 export const approveDriver = async (req, res) => {
   try {
-    const {userId } = req.body;
+    const {id } = req.params;
     const user = await User.findById(req.userId);
 
     if (!user || user.role !== "admin") {
       return res.status(403).json({ success: false, msg: "Only admin can approve drivers" });
     }
 
-    const driver = await Driver.findOne({ userId: userId });
+    const driver = await Driver.findOne({ userId: id });
     if (!driver) {
       return res.status(404).json({ success: false, msg: "Driver not found" });
     }
@@ -135,14 +136,14 @@ export const approveDriver = async (req, res) => {
 // ✅ Reject Driver (Admin only)
 export const rejectDriver = async(req, res)=>{
   try {
-    const {userId } = req.body;
+    const {id } = req.params;
     const user = await User.findById(req.userId);
 
     if (!user || user.role !== "admin") {
       return res.status(403).json({ success: false, msg: "Only admin can approve drivers" });
     }
 
-    const driver = await Driver.findOne({ userId: userId });
+    const driver = await Driver.findOne({ userId: id });
     if (!driver) {
       return res.status(404).json({ success: false, msg: "Driver not found" });
     }
@@ -213,6 +214,9 @@ export const updateDriverStatus = async (req, res) => {
   }
 };
 
+export const makeAdmin =()=>{
+
+}
 
 // ✅ Logout
 export const logout = async (req, res) => {

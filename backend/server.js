@@ -43,7 +43,13 @@ app.use('/TriRide/api/booking', bookingRoutes)
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-});
+  socket.on("driverLocation", (data) => {
+    console.log(" Driver Location:", data);
+
+    // EMIT: broadcast to all connected students
+    // So students can see live driver positions on their map
+    io.emit("updateDriverLocation", data);
+  });});
 
 // serving static files in production
 // So the express server can serve the react frontend
