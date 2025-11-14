@@ -10,7 +10,6 @@ export const bookRide = async (req, res) => {
     // Create a booking record
     const booking = new Booking({
       studentId: req.userId,
-      status: "pending",
       start: {
         lat: startLat,
         lng: startLng,
@@ -19,6 +18,7 @@ export const bookRide = async (req, res) => {
         lat: destLat,
         lng: destLng,
       },
+      status: "pending",
     });
 
     const user = await User.findById(req.userId).select("-password");
@@ -40,14 +40,10 @@ export const bookRide = async (req, res) => {
 // ✅ Driver accepts ride
 export const acceptBooking = async (req, res) => {
   try {
-    const { bookingId } = req.body;
+    const { id } = req.params;
     const userId = req.userId;
 
-    if (!bookingId) {
-      return res.status(400).json({ success: false, msg: "bookingId is required" });
-    }
-
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(id);
     if (!booking) {
       return res.status(404).json({ success: false, msg: "Booking not found" });
     }
@@ -153,18 +149,18 @@ export const cancelRide = async (req, res) => {
 // ✅ Mark booking as complete (Driver only)
 export const completeRide = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
     const booking = await Booking.findById(id);
-    const driver = await Driver.findById(booking.driverId);
-
-    if(!driver){
-      return res.status(404).json({ success: false, msg: "Driver not found" });
-    }
     if (!booking) {
       return res.status(404).json({ success: false, msg: "Booking not found" });
     }
 
-    if (req.userId !== booking.driverId.toString()) {
+    const driver = await Driver.findById(booking.driverId);
+        if(!driver){
+      return res.status(404).json({ success: false, msg: "Driver not found" });
+    }
+
+    if (req.userId !== driver.userId.toString()) {
       return res.status(403).json({
         success: false,
         msg: "Not authorized: You are not the driver for this ride",
@@ -191,7 +187,7 @@ export const completeRide = async (req, res) => {
 // ✅ Get confirmed driver details for a ride
 export const getConfirmedDriverDetails = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     const booking = await Booking.findById(id);
     if (!booking) {
@@ -199,10 +195,13 @@ export const getConfirmedDriverDetails = async (req, res) => {
     }
 
     const driver = await Driver.findById(booking.driverId);
-    const user = await User.findById(booking.driverId);
+    const user = await User.findById(driver.userId);
 
-    if (!user || !driver) {
+    if (!driver) {
       return res.status(404).json({ success: false, msg: "Driver not found" });
+    }
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "user not found" });
     }
 
     return res.status(200).json({
@@ -236,10 +235,30 @@ export const getPendingBookings = async (req, res) => {
   }
 };
 
+// ✅ Get all booking
 export const getAllBooking = async(req, res)=>{
-
+  try {
+    const booking = await Booking.find();
+    if(!booking){
+      return res.status(404).json({ success: false, msg: "No booking found" });
+    }
+    return res.status(500).json({success:true, msg:booking})
+  } catch (error) {
+    console.error("Error getting all bookings:", error);
+    return res.status(500).json({ success: false, msg: "Error fetching bookings" });
+  }
 }
 
+// ✅ Get all booking by logged in user
 export const getAllBookingByUser = async(req, res)=>{
-  
+  try {
+    const booking = await booking.find({studentId:req.userId});
+    if(!booking){
+      return res.status(404).json({ success: false, msg: "No booking found" });
+    }
+    return res.status(500).json({success:true, msg:booking})
+  } catch (error) {
+    console.error("Error getting all bookings:", error);
+    return res.status(500).json({ success: false, msg: "Error fetching bookings" });
+  }
 }

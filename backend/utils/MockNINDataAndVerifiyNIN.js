@@ -18,9 +18,9 @@ export const mockNINData = [
   { nin: "17171717171", name: "Matthew Gonzalez" },
   { nin: "18181818181", name: "Nancy Perez" },
   { nin: "19191919191", name: "Anthony Clark" },
-  { nin: "20202020202", name: "Sarah Lewis" }
+  { nin: "20202020202", name: "Sarah Lewis" },
 ];
 
 export const verifyNIN = (nin, name) => mockNINData.find((item)=> item.nin === nin && item.name === name)
-console.log(verifyNIN("10010010010", "John Doe"))
+console.log(verifyNIN("20202020202", "Sarah Lewis"))
 

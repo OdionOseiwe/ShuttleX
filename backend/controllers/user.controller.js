@@ -5,7 +5,6 @@ import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js
 import bcryptjs from "bcryptjs";
 
 // ✅ Signup
-// TODO: add driver phone number
 export const signUp = async (req, res) => {
   const { name, email, password, role, nin, vehicleType, vehicleNumber, capacity, mobileNumber } = req.body;
 
@@ -31,7 +30,9 @@ export const signUp = async (req, res) => {
       mobileNumber,
       role,
     });
+    await user.save();
 
+    let globalDriver;
     //  If driver, verify NIN and register driver profile
     if (role === "driver") {
       const ninResult = verifyNIN(nin.toString(), name);
@@ -49,12 +50,12 @@ export const signUp = async (req, res) => {
         capacity,
         status: "pending",
       });
+      globalDriver= driver
       await driver.save();
     }
 
     // Generate token
     generateTokenAndSetCookie(res, user._id);
-    await user.save();
     
     return res.status(201).json({
       success: true,
@@ -63,6 +64,7 @@ export const signUp = async (req, res) => {
         ...user._doc,
         password: undefined,
       },
+      driver:globalDriver
     });
   } catch (error) {
     console.error("Signup Error:", error);
@@ -178,19 +180,27 @@ export const getPendingDrivers = async (req, res) => {
   }
 };
 
-// ✅ A Driver can update  vehicleType, vehicleNumber, capacity
-// TODO: if empty use the previous value
+// ✅ A Driver can update  vehicleType, vehicleNumber, capacity 
+// and a user can only update mobileNumber
 export const updateDriversProfile = async(req,res) =>{
   try {
     const { vehicleType, vehicleNumber, capacity, mobileNumber } = req.body;
     const driver = await Driver.findOne({ userId: req.userId });
+    const user = await User.findById( req.userId );
     if (vehicleType) driver.vehicleType = vehicleType;
     if (vehicleNumber) driver.vehicleNumber = vehicleNumber;
     if (capacity) driver.capacity = capacity;
-    if (mobileNumber) driver.mobileNumber = mobileNumber;
+    if (mobileNumber) user.mobileNumber = mobileNumber;
 
     await driver.save()
-    return res.status(200).json({success:true, msg:"profile updates"})
+    await user.save();
+    return res.status(200).json({success:true, msg:{
+      driver:driver,
+      user:{
+        ...user.doc,
+        password:undefined
+      }
+    }})
   } catch (error) {
     console.error("Error occured:", error);
     return res.status(500).json({ success: false, msg: "Error occurred while updating profile" });
@@ -214,8 +224,27 @@ export const updateDriverStatus = async (req, res) => {
   }
 };
 
-export const makeAdmin =()=>{
+// ✅  make a registered user an Admin (admin only)
+export const makeAdmin = async(req,res)=>{
+  try {
+    const user = await User.findById(req.userId);
+    if (!user || user.role !== "admin") {
+      return res.status(403).json({ success: false, msg: "Only admin can view pending drivers" });
+    }
 
+    const {email} = req.body;
+    const newAdmin = await User.findOne({email:email});
+    if (!newAdmin) {
+      return res.status(403).json({ success: false, msg: "user not found"});
+    }
+
+    newAdmin.role = "admin";
+    newAdmin.save();
+    res.status(500).json({success:true, msg:`user ${newAdmin._id} now admin`})
+  } catch (error) {
+    console.error("Driver Status Error:", error);
+    return res.status(500).json({ success: false, msg: "Error occurred while updating status" });
+  } 
 }
 
 // ✅ Logout

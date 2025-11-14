@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const bookingSchema =new mongoose.Schema({
-  studentId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  driverId: { type: mongoose.Schema.Types.ObjectId, ref: "Driver", required: true },
+  studentId: { type: mongoose.Schema.Types.ObjectId, ref: "User",  },
+  driverId: { type: mongoose.Schema.Types.ObjectId, ref: "Driver", },
   start: { 
     lat: { type: Number },
     lng: { type: Number },

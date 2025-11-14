@@ -8,11 +8,15 @@ import {
   rejectBooking,
   completeRide,
   getPendingBookings,
-  getConfirmedDriverDetails
+  getConfirmedDriverDetails,
+  getAllBooking,
+  getAllBookingByUser
 } from "../controllers/booking.controller.js";
 
 router.get("/bookings/pending", protect, getPendingBookings);
 router.get("/bookings/:id/driver", protect, getConfirmedDriverDetails);
+router.get("/bookings/all", protect, getAllBooking);
+router.get("/bookings/user/bookings", protect, getAllBookingByUser);
 
 router.post("/bookings", protect, bookRide);
 router.patch("/bookings/:id/accept", protect, acceptBooking);

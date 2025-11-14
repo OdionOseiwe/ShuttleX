@@ -16,7 +16,7 @@ router.post('/drivers/:id/reject', protect, rejectDriver);
 router.get('/drivers/pending', protect, getPendingDrivers);
 
 // Driver routes
-router.patch('/drivers/profile', protect, updateDriversProfile);
+router.patch('/driver/profile', protect, updateDriversProfile);
 router.patch('/driver/status', protect, updateDriverStatus);
 
 
