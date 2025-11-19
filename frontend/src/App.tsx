@@ -11,10 +11,20 @@ function App() {
 // 3. based on feedbacks from passagers reward Drivers with NFT
 
 /// FOR BACKEND
-// add notification schema
 // for history query rides based on user id and for driver rides completed by driver
 // Admin manage users and drivers
 // now the admin function for drivers is to approve them before they start receiving ride rquests
+
+// TODO: Now that the map is working with mockAddress, and the routes are being drawn
+// NEXT: Integrate with backend 
+// 1. sign in users and drivers
+// 3. Do the notifications systems with backend for all users
+// 2. Do the admin dashboard for approving drivers
+// 4. Book a ride 
+// 5. Drivers see ride requests and accept them (socket.io integration)
+// 6. Real-time tracking of rides
+// 7. Load history of rides for users and drivers
+// 8. Update Profile settings
 
   return (
     <>
