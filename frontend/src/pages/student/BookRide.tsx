@@ -1,21 +1,12 @@
-import {  Loader } from 'lucide-react';
-import { GoogleMap, useJsApiLoader, Marker, DirectionsRenderer } from '@react-google-maps/api';
+import { useRef, useEffect, useState } from 'react'
 import BookRideComponent from '../../components/BookRide';
 import Driverinfo from '../../components/Driverinfo';
 import RideRequested from '../../components/RideRequested';
-import { useState, useRef } from 'react';
+import { ekpomaStops } from '../../utils/MockAddress';
+import {drawRouteOnMap} from '../../utils/DrawRouteOnMap';
+import mapboxgl from 'mapbox-gl'
+import 'mapbox-gl/dist/mapbox-gl.css';
 import SideBar from '../../layout/SideBar';
-// Allow global google namespace
-declare global {
-  interface Window {
-    google: any;
-  }
-}
-
-const containerStyle = {
-  width: "100%",
-  height: "100%",
-};
 
 const center = {
   lat: 6.7446,
@@ -23,44 +14,59 @@ const center = {
 };
 
 function BookRide() {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API_KEY,
-    libraries: ['places'],
-  });
+  const [selectedOrigin, setSelectedOrigin] = useState("");
+  const [selectedDestination, setSelectedDestination] = useState("");
+  const mapRef = useRef<any>(null)
+  const originMarkerRef = useRef<any>(null);
+  const destinationMarkerRef = useRef<any>(null);
+  const mapContainerRef = useRef<any>(null)
 
-  const [directionResponse, setDirectionResponse] = useState<any>(null);
-  const [direction, setDirection] = useState('');
-  const [duration, setDuration] = useState('');
+  const addMarker = (coords:any, label:any, markerRef:any) => {
+    if (!mapRef.current) return;
 
+    if (markerRef.current) markerRef.current.remove();
 
-  const originInputRef = useRef<HTMLInputElement | null>(null);
-  const destinationInputRef = useRef<HTMLInputElement | null>(null);
-  const [showProfile, setShowProfile] = useState(false);
-
-  const calculateRoute = async () => {
-    if (!originInputRef.current?.value || !destinationInputRef.current?.value) return;
-
-    const directionService = new window.google.maps.DirectionsService();
-    
-    const results = await directionService.route({
-      origin: originInputRef.current.value,
-      destination: destinationInputRef.current.value,
-      travelMode: window.google.maps.TravelMode.DRIVING,
-    });
-
-    setDirectionResponse(results);
-    setDirection(results.routes[0].legs[0].distance?.text || '');
-    setDuration(results.routes[0].legs[0].duration?.text || '');
+    markerRef.current = new mapboxgl.Marker({ color: label === "A" ? "green" : "red" })
+      .setLngLat(coords)
+      .setPopup(new mapboxgl.Popup().setText(label)) // A or B popup
+      .addTo(mapRef.current);
   };
 
-  if (!isLoaded) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader size={50} className="animate-spin" />
-      </div>
-    );
-  }
+
+  const handleBooking = async() => {
+    const pickupStop = ekpomaStops.find((stop) => stop.address === selectedOrigin);
+    const dropoffStop = ekpomaStops.find((stop) => stop.address === selectedDestination);
+
+    if (!pickupStop || !dropoffStop) {
+      alert("Invalid address selected");
+      return;
+    }
+    const travelTime = await fetch(`https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${pickupStop.lon},${pickupStop.lat};${dropoffStop.lon},${dropoffStop.lat}?access_token=${mapboxgl.accessToken}`);
+    const travelTimeData = await travelTime.json();
+    console.log(travelTimeData);
+    
+    
+    addMarker(pickupStop, "A", originMarkerRef);
+    addMarker(dropoffStop, "B", destinationMarkerRef);   
+    await drawRouteOnMap(pickupStop, dropoffStop, mapRef);
+  };
+
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    mapboxgl.accessToken =
+      "pk.eyJ1Ijoib2Rrb2RlczEyMyIsImEiOiJjbWk1NnltdGwwM3Y5Mmpxemh5eXJpYndtIn0.cS4pZKYF6_G_fSPSrihxzA";
+
+    mapRef.current = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: "mapbox://styles/mapbox/streets-v12",  
+      center: [center.lng, center.lat],
+      zoom: 12,
+    });
+
+    return () => mapRef.current?.remove();
+  }, []);
+
 
   return (
     <div className="py-5 z-1">
@@ -68,24 +74,19 @@ function BookRide() {
      <SideBar/>
 
       <div className="md:flex md:px-20 px-10  m-2 md:space-x-8 mt-10">
-        {/* <BookRideComponent originInputRef={originInputRef} destinationInputRef={destinationInputRef} calculateRoute={calculateRoute}/> */}
-        <Driverinfo/>
-        <div className="w-full h-150 rounded-xl">
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={center}
-            zoom={10}
-            options={{
-              fullscreenControl: false,
-              zoomControl: false,
-              streetViewControl: false,
-              rotateControl: false,
-            }}
-          >
-            <Marker position={center} />
-            {directionResponse && <DirectionsRenderer/>}
-          </GoogleMap>
-        </div>
+        <BookRideComponent
+          selectedOrigin={selectedOrigin}
+          setSelectedOrigin={setSelectedOrigin}
+          selectedDestination={selectedDestination}
+          setSelectedDestination={setSelectedDestination}
+          calculateRoute={handleBooking}
+        />
+
+        {/* <Driverinfo/> */}
+        <div
+          ref={mapContainerRef}
+          className="w-full h-[500px] rounded-xl"
+        />
       </div>
     </div>
   );

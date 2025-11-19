@@ -1,0 +1,22 @@
+export const ekpomaStops = [
+  { address: "No. 12 Igueben Road, Ekpoma", lat: 6.7300, lon: 6.1400 },
+  { address: "No. 7 College Street, Ekpoma", lat: 6.7310, lon: 6.1420 },
+  { address: "No. 5 Uniben Road, Ekpoma", lat: 6.7325, lon: 6.1395 },
+  { address: "No. 20 Uromi Street, Ekpoma", lat: 6.7330, lon: 6.1410 },
+  { address: "No. 14 Emaudo Road, Ekpoma", lat: 6.7340, lon: 6.1405 },
+  { address: "No. 8 Science Road, Ekpoma", lat: 6.7350, lon: 6.1380 },
+  { address: "No. 25 Oko Street, Ekpoma", lat: 6.7360, lon: 6.1375 },
+  { address: "No. 3 Ugbowo Street, Ekpoma", lat: 6.7370, lon: 6.1390 },
+  { address: "No. 16 Ikpoba Hill Road, Ekpoma", lat: 6.7380, lon: 6.1365 },
+  { address: "No. 9 Okpe Road, Ekpoma", lat: 6.7390, lon: 6.1355 },
+  { address: "No. 11 Enogbo Road, Ekpoma", lat: 6.7400, lon: 6.1345 },
+  { address: "No. 4 Opoji Street, Ekpoma", lat: 6.7410, lon: 6.1335 },
+  { address: "No. 18 Emu Street, Ekpoma", lat: 6.7420, lon: 6.1325 },
+  { address: "No. 22 Agedo Road, Ekpoma", lat: 6.7430, lon: 6.1315 },
+  { address: "No. 6 Uwafiokun Street, Ekpoma", lat: 6.7440, lon: 6.1305 },
+  { address: "No. 9 Idumebo Road, Ekpoma", lat: 6.7450, lon: 6.1295 },
+  { address: "No. 13 Ugbowo Lane, Ekpoma", lat: 6.7460, lon: 6.1285 },
+  { address: "No. 17 College Avenue, Ekpoma", lat: 6.7470, lon: 6.1275 },
+  { address: "No. 21 Science Street, Ekpoma", lat: 6.7480, lon: 6.1265 },
+  { address: "No. 10 Ikpoba Street, Ekpoma", lat: 6.7490, lon: 6.1255 }
+];
