@@ -1,7 +1,7 @@
 import express from "express"
 const router = express.Router()
 import {protect} from '../middleware/protect.js'
-import {signUp, login, logout,rejectDriver,updateDriversProfile,updateDriverStatus,checkAuth,approveDriver,getPendingDrivers} from '../controllers/User.controller.js'
+import {signUp, login, logout,rejectDriver,updateDriversProfile,updateDriverStatus,checkAuth,approveDriver,getPendingDrivers} from '../controllers/user.controller.js'
 
 
 // Auth routes
