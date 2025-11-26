@@ -1,7 +1,7 @@
-import { Booking } from "../Models/booking.model.js";
-import User from "../Models/User.model.js";
-import { Driver } from "../Models/driver.model.js";
-import Notification from '../Models/notifications.model.js';
+import { Booking } from "../models/Booking.model.js";
+import User from "../models/User.model.js";
+import { Driver } from "../models/Driver.model.js";
+import Notification from "../models/Notifications.model.js";
 
 // ✅ Book a ride (Student)
 export const bookRide = async (req, res) => {
@@ -18,16 +18,18 @@ export const bookRide = async (req, res) => {
 
     const user = await User.findById(req.userId).select("-password");
 
-      await Notification.create({
-        userId: req.userId,
-        title: "new Ride booked",
-        data: { bookingId: booking._id, startLat, startLng, destLat, destLng },
-      });
+    await Notification.create({
+      userId: req.userId,
+      title: "new Ride booked",
+      data: { bookingId: booking._id, startLat, startLng, destLat, destLng },
+    });
 
     return res.status(201).json({ success: true, msg: { booking, user } });
   } catch (error) {
     console.error("Error creating booking:", error);
-    return res.status(500).json({ success: false, msg: "Error creating booking" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error creating booking" });
   }
 };
 
@@ -38,18 +40,33 @@ export const acceptBooking = async (req, res) => {
     const userId = req.userId;
 
     const booking = await Booking.findById(id);
-    if (!booking) return res.status(404).json({ success: false, msg: "Booking not found" });
+    if (!booking)
+      return res.status(404).json({ success: false, msg: "Booking not found" });
 
     const driver = await Driver.findOne({ userId });
-    if (!driver) return res.status(404).json({ success: false, msg: "Driver not found" });
-    
-    const invalidDriverStatuses = ["rejected", "unavailable", "pending", "on-trip"];
+    if (!driver)
+      return res.status(404).json({ success: false, msg: "Driver not found" });
+
+    const invalidDriverStatuses = [
+      "rejected",
+      "unavailable",
+      "pending",
+      "on-trip",
+    ];
     if (invalidDriverStatuses.includes(driver.status)) {
-      return res.status(400).json({ success: false, msg: "Driver unavailable or unverified" });
+      return res
+        .status(400)
+        .json({ success: false, msg: "Driver unavailable or unverified" });
     }
 
-    if (booking.status === "confirmed" || booking.status === "completed" || booking.status === "cancelled") {
-      return res.status(400).json({ success: false, msg: "Ride already accepted or completed" });
+    if (
+      booking.status === "confirmed" ||
+      booking.status === "completed" ||
+      booking.status === "cancelled"
+    ) {
+      return res
+        .status(400)
+        .json({ success: false, msg: "Ride already accepted or completed" });
     }
 
     booking.driverId = driver._id;
@@ -65,16 +82,27 @@ export const acceptBooking = async (req, res) => {
     await Notification.create({
       userId: booking.studentId,
       title: "Ride Confirmed",
-      data: { driverId: driver._id, driverName: student.name, bookingId: booking._id },
+      data: {
+        driverId: driver._id,
+        driverName: student.name,
+        bookingId: booking._id,
+      },
     });
 
     return res.status(200).json({
       success: true,
-      msg: { name: student.name, mobileNumber: student.mobileNumber, booking, driver },
+      msg: {
+        name: student.name,
+        mobileNumber: student.mobileNumber,
+        booking,
+        driver,
+      },
     });
   } catch (error) {
     console.error("Error accepting ride:", error);
-    return res.status(500).json({ success: false, msg: "Error accepting booking" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error accepting booking" });
   }
 };
 
@@ -83,7 +111,8 @@ export const rejectBooking = async (req, res) => {
   try {
     const { id } = req.params;
     const booking = await Booking.findById(id);
-    if (!booking) return res.status(404).json({ success: false, msg: "Booking not found" });
+    if (!booking)
+      return res.status(404).json({ success: false, msg: "Booking not found" });
 
     booking.status = "rejected";
     await booking.save();
@@ -98,7 +127,9 @@ export const rejectBooking = async (req, res) => {
     return res.status(200).json({ success: true, msg: "Booking rejected" });
   } catch (error) {
     console.error("Error rejecting booking:", error);
-    return res.status(500).json({ success: false, msg: "Error rejecting booking" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error rejecting booking" });
   }
 };
 
@@ -107,14 +138,19 @@ export const cancelRide = async (req, res) => {
   try {
     const { id } = req.params;
     const booking = await Booking.findById(id);
-    if (!booking) return res.status(404).json({ success: false, msg: "Booking not found" });
+    if (!booking)
+      return res.status(404).json({ success: false, msg: "Booking not found" });
 
     if (booking.studentId.toString() !== req.userId) {
-      return res.status(403).json({ success: false, msg: "Not authorized to cancel this ride" });
+      return res
+        .status(403)
+        .json({ success: false, msg: "Not authorized to cancel this ride" });
     }
 
     if (booking.status === "completed") {
-      return res.status(400).json({ success: false, msg: "Cannot cancel a completed ride" });
+      return res
+        .status(400)
+        .json({ success: false, msg: "Cannot cancel a completed ride" });
     }
 
     booking.status = "cancelled";
@@ -129,10 +165,14 @@ export const cancelRide = async (req, res) => {
       });
     }
 
-    return res.status(200).json({ success: true, msg: "Ride cancelled", booking });
+    return res
+      .status(200)
+      .json({ success: true, msg: "Ride cancelled", booking });
   } catch (error) {
     console.error("Error cancelling ride:", error);
-    return res.status(500).json({ success: false, msg: "Error cancelling ride" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error cancelling ride" });
   }
 };
 
@@ -141,12 +181,17 @@ export const completeRide = async (req, res) => {
   try {
     const { id } = req.params;
     const booking = await Booking.findById(id);
-    if (!booking) return res.status(404).json({ success: false, msg: "Booking not found" });
+    if (!booking)
+      return res.status(404).json({ success: false, msg: "Booking not found" });
 
     const driver = await Driver.findById(booking.driverId);
-    if (!driver) return res.status(404).json({ success: false, msg: "Driver not found" });
+    if (!driver)
+      return res.status(404).json({ success: false, msg: "Driver not found" });
     if (req.userId !== driver.userId.toString()) {
-      return res.status(403).json({ success: false, msg: "Not authorized: You are not the driver for this ride" });
+      return res.status(403).json({
+        success: false,
+        msg: "Not authorized: You are not the driver for this ride",
+      });
     }
 
     booking.status = "completed";
@@ -162,10 +207,14 @@ export const completeRide = async (req, res) => {
       data: { bookingId: booking._id, driverId: driver._id },
     });
 
-    return res.status(200).json({ success: true, msg: "Ride completed successfully", booking });
+    return res
+      .status(200)
+      .json({ success: true, msg: "Ride completed successfully", booking });
   } catch (error) {
     console.error("Error completing ride:", error);
-    return res.status(500).json({ success: false, msg: "Error completing ride" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error completing ride" });
   }
 };
 
@@ -174,19 +223,30 @@ export const getConfirmedDriverDetails = async (req, res) => {
   try {
     const { id } = req.params;
     const booking = await Booking.findById(id);
-    if (!booking) return res.status(404).json({ success: false, msg: "Booking not found" });
+    if (!booking)
+      return res.status(404).json({ success: false, msg: "Booking not found" });
 
     const driver = await Driver.findById(booking.driverId);
     const user = driver ? await User.findById(driver.userId) : null;
-    if (!driver || !user) return res.status(404).json({ success: false, msg: "Driver or user not found" });
+    if (!driver || !user)
+      return res
+        .status(404)
+        .json({ success: false, msg: "Driver or user not found" });
 
     return res.status(200).json({
       success: true,
-      msg: { name: user.name, mobileNumber: user.mobileNumber, booking, driver },
+      msg: {
+        name: user.name,
+        mobileNumber: user.mobileNumber,
+        booking,
+        driver,
+      },
     });
   } catch (error) {
     console.error("Error fetching driver details:", error);
-    return res.status(500).json({ success: false, msg: "Error fetching driver details" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error fetching driver details" });
   }
 };
 
@@ -194,11 +254,16 @@ export const getConfirmedDriverDetails = async (req, res) => {
 export const getPendingBookings = async (req, res) => {
   try {
     const pendingBookings = await Booking.find({ status: "pending" });
-    if (!pendingBookings.length) return res.status(404).json({ success: false, msg: "No pending bookings found" });
+    if (!pendingBookings.length)
+      return res
+        .status(404)
+        .json({ success: false, msg: "No pending bookings found" });
     return res.status(200).json({ success: true, bookings: pendingBookings });
   } catch (error) {
     console.error("Error getting pending bookings:", error);
-    return res.status(500).json({ success: false, msg: "Error fetching pending bookings" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error fetching pending bookings" });
   }
 };
 
@@ -206,11 +271,14 @@ export const getPendingBookings = async (req, res) => {
 export const getAllBooking = async (req, res) => {
   try {
     const booking = await Booking.find();
-    if (!booking.length) return res.status(404).json({ success: false, msg: "No bookings found" });
+    if (!booking.length)
+      return res.status(404).json({ success: false, msg: "No bookings found" });
     return res.status(200).json({ success: true, msg: booking });
   } catch (error) {
     console.error("Error getting all bookings:", error);
-    return res.status(500).json({ success: false, msg: "Error fetching bookings" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error fetching bookings" });
   }
 };
 
@@ -218,10 +286,13 @@ export const getAllBooking = async (req, res) => {
 export const getAllBookingByUser = async (req, res) => {
   try {
     const booking = await Booking.find({ studentId: req.userId });
-    if (!booking.length) return res.status(404).json({ success: false, msg: "No bookings found" });
+    if (!booking.length)
+      return res.status(404).json({ success: false, msg: "No bookings found" });
     return res.status(200).json({ success: true, msg: booking });
   } catch (error) {
     console.error("Error getting bookings by user:", error);
-    return res.status(500).json({ success: false, msg: "Error fetching bookings" });
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error fetching bookings" });
   }
 };
