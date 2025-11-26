@@ -4,7 +4,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 // Use VITE_BACKEND_URL or fallback
-const HOST_URL = "http://localhost:5000/TriRide/api";
+const HOST_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/TriRide/api";
 
 // User type
 type User = {
