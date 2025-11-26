@@ -1,6 +1,7 @@
 // SignupPage.tsx
 import React, { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import {useAuthStore} from '../../store/UserAuth'
 
 interface FormData {
   name: string;
@@ -20,15 +21,16 @@ interface FormErrors {
 
 const SignupPage: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    name: "",
     email: "",
     password: "",
+    name: "",
     confirmPassword: "",
     mobile_number: ""
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const navigator = useNavigate();
+  const {signUp,error} = useAuthStore();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,15 +48,25 @@ const SignupPage: React.FC = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Form Submitted", formData);
-      // TODO: Add API call here
+      await signUp(
+        formData.email,
+        formData.password,
+        formData.name,
+        'student',
+        formData.mobile_number,
+        "",
+        "",
+        "",
+        ""
+      )
       navigator('/login')
     } else {
       setErrors(validationErrors);
+      console.log(error);
     }
   };
 
@@ -70,7 +82,7 @@ const SignupPage: React.FC = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              required
+              // required
               className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
@@ -83,12 +95,25 @@ const SignupPage: React.FC = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              required
+              // required
               className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
-
+          <div>
+            <label className="block text-sm font-medium">mobile number</label>
+            <input
+              type="text"
+              name="mobile_number"
+              value={formData.mobile_number}
+              onChange={handleChange}
+              // required
+              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {errors.mobile_number && (
+              <p className="text-red-500 text-sm">{errors.mobile_number}</p>
+            )}
+          </div>
           <div>
             <label className="block text-sm font-medium">Password</label>
             <input
@@ -96,29 +121,13 @@ const SignupPage: React.FC = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              required
+              // required
               className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}
           </div>
-              <div>
-            <label className="block text-sm font-medium">mobile number</label>
-            <input
-              type="text"
-              name="mobile_number"
-              value={formData.mobile_number}
-              onChange={handleChange}
-              required
-              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            {errors.mobile_number && (
-              <p className="text-red-500 text-sm">{errors.mobile_number}</p>
-            )}
-          </div>
-
-
           <div>
             <label className="block text-sm font-medium">Confirm Password</label>
             <input

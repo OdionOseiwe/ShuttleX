@@ -1,5 +1,19 @@
 import { UserRound, Bell, Book,History, UserPen } from "lucide-react"
+import {useAuthStore} from '../store/UserAuth'
+import { useNavigate } from "react-router-dom";
 function Profile() {
+    const {logout,error} = useAuthStore();
+    const navigator = useNavigate();
+
+    const handleLogout = async() =>{
+      try {
+        await logout();
+        navigator('/login')
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
     const profile = [
         {name: 'Book Ride', icon: Book},
         {name: 'Notifications', icon: Bell},
@@ -22,7 +36,7 @@ function Profile() {
             ))
         }
       </div>
-        <div className=" bg-gray-100 hover:bg-gray-200 text-center py-3 px-6 rounded-xl text-red-500 font-semibold">Logout</div>
+        <button onClick={handleLogout} className=" bg-gray-100 w-full hover:bg-gray-200 text-center py-3 px-6 rounded-xl text-red-500 font-semibold">Logout</button>
     </div>
   )
 }

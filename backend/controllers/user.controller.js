@@ -9,7 +9,7 @@ import bcryptjs from "bcryptjs";
 // TODO: Add picture upload funcionality
 //TODO: 
 export const signUp = async (req, res) => {
-  const { name, email, password, role, nin, vehicleType, vehicleNumber, capacity, mobileNumber,photo } = req.body;
+  const { name, email, password, role,mobileNumber, nin, vehicleType, vehicleNumber, capacity,photo } = req.body;
 
   try {
     if (!email || !password || !name || !role || !mobileNumber) {

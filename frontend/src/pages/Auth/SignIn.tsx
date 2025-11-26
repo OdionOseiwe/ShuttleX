@@ -1,6 +1,7 @@
 // SignupPage.tsx
 import React, { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import {useAuthStore} from '../../store/UserAuth'
 
 interface FormData {
   email: string;
@@ -8,6 +9,7 @@ interface FormData {
 }
 
 const Signin: React.FC = () => {
+  const {login,error} = useAuthStore();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -19,14 +21,13 @@ const Signin: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-        console.log("Form Submitted", formData);
-        // TODO: Add API call here
-        navigator('/book-ride')
+      await login(formData.email, formData.password)
+      navigator('/book-ride')
     } catch (error) {
-        
+        console.log(error);
     }
   };
 
@@ -66,7 +67,7 @@ const Signin: React.FC = () => {
             type="submit"
             className="w-full bg-black text-white py-2 rounded-md hover:bg-black/80 transition-colors"
           >
-            Sign Up
+            Log in
           </button>
         </form>
 

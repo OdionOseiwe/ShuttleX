@@ -1,13 +1,27 @@
 import Home from "./pages/Home/Home";
 import BookRide from "./pages/student/BookRide";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route,Navigate } from 'react-router-dom';
 import DriverRideRequest from "./components/DriverRideRequest";
 import Notifications from "./pages/student/Notifications";
 import SignupPage from "./pages/Auth/SignUp";
 import SignupPageDriver from "./pages/Auth/SignUpDriver";
 import Signin from "./pages/Auth/SignIn";
+import {useAuthStore} from './store/UserAuth'
+import { useEffect } from "react";
+
+const ProtectedRoutes = ({children}: { children: any })=>{
+  const { isAuthenticated } = useAuthStore();
+
+  if(!isAuthenticated){
+    return <Navigate to= "/login" replace />;
+  }
+  return children
+}
+
+
 function App() {
- 
+  const {checkAuth} = useAuthStore();
+
 /// MORE FEATURES
 // 1. Book a ride on behalf of someone
 // 2. schedule a ride (like for tomorrow)
@@ -20,7 +34,8 @@ function App() {
 
 // TODO: Now that the map is working with mockAddress, and the routes are being drawn
 // NEXT: Integrate with backend 
-// 1. sign in users and drivers
+// 1. sign in users and drivers 
+   // - toaster messages for success and errors
 // 3. Do the notifications systems with backend for all users
 // 2. Do the admin dashboard for approving drivers
 // 4. Book a ride 
@@ -29,16 +44,28 @@ function App() {
 // 7. Load history of rides for users and drivers
 // 8. Update Profile settings
 
+useEffect(() =>{
+  checkAuth();
+})
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/book-ride" element={<BookRide />} />
+          <Route path="/book-ride" element={
+            <ProtectedRoutes>
+              <BookRide/>
+            </ProtectedRoutes>
+          } />
           {/* <Route path="/" element={<Home />} />
           {/* <Route path="/" element={<Home />} /> */}
           {/* <Route path="/" element={<Home />} /> */}
-          <Route path="/notification" element={<Notifications />} /> 
+          
+          <Route path="/notification" element={
+            <ProtectedRoutes>
+              <Notifications/>
+            </ProtectedRoutes>
+          } /> 
           <Route path= '/signup' element= {<SignupPage/>}/>
           <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
           <Route path= '/login' element= {<Signin/>}/>
