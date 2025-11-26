@@ -1,6 +1,7 @@
 import NavBar from "../../layout/navBar";
 import Slidder from "../../components/slidder";
 
+//TODO: add AAU logo to the hero section
 function Hero() {
   return (
     <section id="Hero" className="">

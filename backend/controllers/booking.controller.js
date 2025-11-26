@@ -42,11 +42,13 @@ export const acceptBooking = async (req, res) => {
 
     const driver = await Driver.findOne({ userId });
     if (!driver) return res.status(404).json({ success: false, msg: "Driver not found" });
-    if (driver.status === "rejected" || driver.status === "unavailable" || driver.status === "pending") {
+    
+    const invalidDriverStatuses = ["rejected", "unavailable", "pending", "on-trip"];
+    if (invalidDriverStatuses.includes(driver.status)) {
       return res.status(400).json({ success: false, msg: "Driver unavailable or unverified" });
     }
 
-    if (booking.status !== "pending" && booking.status !== "rejected") {
+    if (booking.status === "confirmed" || booking.status === "completed" || booking.status === "cancelled") {
       return res.status(400).json({ success: false, msg: "Ride already accepted or completed" });
     }
 

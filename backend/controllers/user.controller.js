@@ -6,8 +6,10 @@ import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js
 import bcryptjs from "bcryptjs";
 
 // ✅ Signup
+// TODO: Add picture upload funcionality
+//TODO: 
 export const signUp = async (req, res) => {
-  const { name, email, password, role, nin, vehicleType, vehicleNumber, capacity, mobileNumber } = req.body;
+  const { name, email, password, role, nin, vehicleType, vehicleNumber, capacity, mobileNumber,photo } = req.body;
 
   try {
     if (!email || !password || !name || !role || !mobileNumber) {

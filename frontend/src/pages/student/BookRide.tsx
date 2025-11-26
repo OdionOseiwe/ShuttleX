@@ -7,6 +7,7 @@ import {drawRouteOnMap} from '../../utils/DrawRouteOnMap';
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import SideBar from '../../layout/SideBar';
+//TODO: add watsapp functionality for driver contract
 
 const center = {
   lat: 6.7446,
@@ -74,13 +75,14 @@ function BookRide() {
      <SideBar/>
 
       <div className="md:flex md:px-20 px-10  m-2 md:space-x-8 mt-10">
-        <BookRideComponent
+        {/* <BookRideComponent
           selectedOrigin={selectedOrigin}
           setSelectedOrigin={setSelectedOrigin}
           selectedDestination={selectedDestination}
           setSelectedDestination={setSelectedDestination}
           calculateRoute={handleBooking}
-        />
+        /> */}
+        <Driverinfo/>
 
         {/* <Driverinfo/> */}
         <div

@@ -4,8 +4,8 @@ function Footer() {
     <footer className="bg-gray-900 text-gray-300 py-10 px-6 md:px-16 mt-12">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
 
-        <div>
-          <h2 className="text-2xl font-bold text-white">ShuttleX</h2>
+        <div> 
+          <img className="w-50 cursor-pointer" src="https://aauekpoma.edu.ng/wp-content/themes/aaue/assets/images/logo.png" alt="AAU logo" />
           <p className="mt-3 text-sm text-gray-400">
             Smart campus transportation made simple.  
             Book rides safely, quickly, and effortlessly.

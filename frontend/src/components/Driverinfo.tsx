@@ -1,4 +1,4 @@
-import { Phone,WalletMinimal,MapPin,ArrowRight, } from "lucide-react"
+import { Phone,WalletMinimal,MapPin,ArrowRight } from "lucide-react"
 
 function Driverinfo() {
   return (
@@ -6,7 +6,10 @@ function Driverinfo() {
       <div>
         <h1 className="font-bold text-2xl text-center border-b-2 border-gray-100 py-3">Pickup in 4mins</h1>
         <p className="font-semibold py-2 text-xl text-center">Musa Danbaba</p>
-        <p className="font-semibold py-2 flex justify-center items-center"><Phone className=""/> <span className="mx-3">080676757378</span></p>
+        <a href="https://wa.me/+2348085139602" className="font-semibold py-2 flex justify-center items-center"> 
+          <img className="w-10 h-10" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/2062095_application_chat_communication_logo_whatsapp_icon.svg/2048px-2062095_application_chat_communication_logo_whatsapp_icon.svg.png"  alt="" /> 
+          <span className="mx-3">+2348085139602</span>
+        </a>
       </div>
       <div>
          <div className="flex mt-5 items-start gap-3">
