@@ -1,6 +1,6 @@
 import Home from "./pages/Home/Home";
 import BookRide from "./pages/student/BookRide";
-import { BrowserRouter, Routes, Route,Navigate } from 'react-router-dom';
+import {Routes, Route,Navigate } from 'react-router-dom';
 import Notifications from "./pages/student/Notifications";
 import SignupPage from "./pages/Auth/SignUp";
 import SignupPageDriver from "./pages/Auth/SignUpDriver";
@@ -48,7 +48,6 @@ function App() {
   },[checkAuth])
   return (
     <>
-      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/book-ride" element={
@@ -69,7 +68,6 @@ function App() {
           <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
           <Route path= '/login' element= {<Signin/>}/>
         </Routes>
-      </BrowserRouter>
     </>
   )
 }
