@@ -1,7 +1,6 @@
-import { Dot } from 'lucide-react';
 function WhyShuttleX() {
   return (
-    <section id='whyShuttleX' className='grid grid-cols-2 gap-10 px-25 mt-20 items-center'>
+    <section id='whyShuttleX' className='grid md:grid-cols-2  gap-10 md:px-25 px-10 mt-20 items-center'>
         <div>
             <h1 className='text-4xl font-semibold mb-10'>Why ShuttleX?</h1> 
             <div className='leading-10 text-xl'>

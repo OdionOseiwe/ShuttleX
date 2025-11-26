@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import BookRideComponent from '../../components/BookRide';
-import Driverinfo from '../../components/Driverinfo';
-import RideRequested from '../../components/RideRequested';
+// import Driverinfo from '../../components/Driverinfo';
+// import RideRequested from '../../components/RideRequested';
 import { ekpomaStops } from '../../utils/MockAddress';
 import {drawRouteOnMap} from '../../utils/DrawRouteOnMap';
 import mapboxgl from 'mapbox-gl'

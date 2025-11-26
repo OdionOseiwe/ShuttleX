@@ -1,7 +1,6 @@
 import Home from "./pages/Home/Home";
 import BookRide from "./pages/student/BookRide";
 import { BrowserRouter, Routes, Route,Navigate } from 'react-router-dom';
-import DriverRideRequest from "./components/DriverRideRequest";
 import Notifications from "./pages/student/Notifications";
 import SignupPage from "./pages/Auth/SignUp";
 import SignupPageDriver from "./pages/Auth/SignUpDriver";
@@ -44,9 +43,9 @@ function App() {
 // 7. Load history of rides for users and drivers
 // 8. Update Profile settings
 
-useEffect(() =>{
-  checkAuth();
-})
+  useEffect(()=>{
+    checkAuth()
+  },[checkAuth])
   return (
     <>
       <BrowserRouter>

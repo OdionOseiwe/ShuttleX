@@ -1,4 +1,3 @@
-import React from "react";
 
 const images = [
   {src:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb9Mh4xLlPD8IO-FrhP6NQEH_1lFJsfWWZVA&s", span: "row-span-2" },

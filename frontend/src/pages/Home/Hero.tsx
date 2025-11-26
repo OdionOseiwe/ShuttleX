@@ -1,14 +1,14 @@
-import NavBar from "../../layout/navBar";
-import Slidder from "../../components/slidder";
+import NavBar from "../../layout/NavBar";
+import Slidder from "../../components/Slidder";
 
 //TODO: add AAU logo to the hero section
 function Hero() {
   return (
     <section id="Hero" className="">
       <NavBar/>
-      <div className="grid md:grid-cols-2 grid-cols-1 gap-10 pt-20 md:px-25 px-10">
+      <div className="grid md:grid-cols-2 grid-cols-1 gap-10 pt-20 md:px-25 px-5">
         <div className="md:mt-20 mt-10">
-            <h1 className="lg:text-6xl text-3xl font-semibold leading-16">
+            <h1 className="lg:text-6xl text-3xl font-semibold md:leading-16">
                 Go anywhere with ShuttleX
             </h1>
             <p className="mt-6">

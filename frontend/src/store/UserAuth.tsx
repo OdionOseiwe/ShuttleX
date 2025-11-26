@@ -4,7 +4,7 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 // Use VITE_BACKEND_URL or fallback
-const HOST_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/TriRide/api/user";
+const HOST_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/TriRide/api";
 
 // User type
 type User = {
@@ -65,7 +65,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       set({ isLoading: true, error: null });
 
-      const response = await axios.post(`${HOST_URL}/signup`, {
+      const response = await axios.post(`${HOST_URL}/user/signup`, {
         email,
         password,
         name,
@@ -96,7 +96,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       set({ isLoading: true, error: null });
 
-      const res = await axios.post(`${HOST_URL}/login`, {
+      const res = await axios.post(`${HOST_URL}/user/login`, {
         email,
         password,
       });
@@ -120,7 +120,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       set({ isLoading: true });
 
-      await axios.post(`${HOST_URL}/logout`);
+      await axios.post(`${HOST_URL}/user/logout`);
 
       set({
         user: null,
@@ -134,8 +134,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   // CHECK AUTH
   checkAuth: async () => {
+    set({ isCheckingAuth: true, error: null });
     try {
-      const res = await axios.get(`${HOST_URL}/check-auth`);
+      const res = await axios.get(`${HOST_URL}/user/check-auth`);
 
       set({
         user: res.data.user,
@@ -145,7 +146,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
     } catch (error) {
       set({
         user: null,
-        isAuthenticated: false,
         isCheckingAuth: false,
       });
     }

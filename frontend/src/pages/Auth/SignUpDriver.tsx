@@ -1,5 +1,5 @@
 // SignupPage.tsx
-import React, { useState } from "react";
+import React, { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface FormData {
@@ -41,7 +41,7 @@ const SignupPageDriver: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const navigator = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -57,7 +57,7 @@ const SignupPageDriver: React.FC = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
@@ -117,7 +117,7 @@ const SignupPageDriver: React.FC = () => {
             <select
               className="w-full p-3 mt-4 bg-gray-100 rounded-xl outline-none cursor-pointer
                     border-2 border-transparent focus:border-black focus:bg-white"
-             value={formData.vehicle_type} onChange={handleChange} name="vehicle_type">
+             value={formData.vehicle_type} onChange={()=>handleChange} name="vehicle_type">
                 <option disabled>choose vehicle type</option>
                 <option value="Bus" >Bus</option>
                 <option value="keke" >Keke</option>

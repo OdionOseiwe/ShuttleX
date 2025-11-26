@@ -1,4 +1,4 @@
-import { Phone,WalletMinimal,MapPin,ArrowRight } from "lucide-react"
+import { WalletMinimal,MapPin,ArrowRight } from "lucide-react"
 
 function Driverinfo() {
   return (

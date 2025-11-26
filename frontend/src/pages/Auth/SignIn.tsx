@@ -1,5 +1,5 @@
 // SignupPage.tsx
-import React, { useState, type FormEvent } from "react";
+import React, { useState, type FormEvent} from "react";
 import { useNavigate } from "react-router-dom";
 import {useAuthStore} from '../../store/UserAuth'
 
@@ -9,7 +9,7 @@ interface FormData {
 }
 
 const Signin: React.FC = () => {
-  const {login,error} = useAuthStore();
+  const {login} = useAuthStore();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -17,11 +17,11 @@ const Signin: React.FC = () => {
 
   const navigator = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async(e:FormEvent) => {
     e.preventDefault();
     try {
       await login(formData.email, formData.password)

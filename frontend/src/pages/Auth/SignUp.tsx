@@ -32,7 +32,7 @@ const SignupPage: React.FC = () => {
   const navigator = useNavigate();
   const {signUp,error} = useAuthStore();
 
-  const handleChange = (e) => {
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -48,7 +48,7 @@ const SignupPage: React.FC = () => {
     return newErrors;
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async(e:FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
