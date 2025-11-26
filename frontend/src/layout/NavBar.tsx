@@ -10,9 +10,9 @@ function NavBar() {
         <li className=' md:block hidden hover:bg-white/10 hover:rounded-full px-4 py-1 cursor-pointer'>Drive</li>
         <li className=' md:block hidden hover:bg-white/10 hover:rounded-full px-4 py-1 cursor-pointer'>About</li>
       </ol>
-      <div className='md:flex hidden space-x-2'>
-        <button className='hover:bg-white/10 hover:rounded-full px-4 py-1 cursor-pointer'>Log in</button>
-        <button className='bg-white text-black font-semibold rounded-full px-4 py-1 cursor-pointer'>Sign up</button>
+      <div className='md:flex items-center hidden space-x-2'>
+        <a href="/login" className='hover:bg-white/10 hover:rounded-full px-4 py-1 cursor-pointer'>Log in</a>
+        <a href="/signup" className='bg-white text-black font-semibold rounded-full px-4 py-1 cursor-pointer'>Sign up</a>
       </div>
     </nav>
   )

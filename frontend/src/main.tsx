@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
 
+/// git config core.ignorecase false case sensetitive error
+
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
     <BrowserRouter>

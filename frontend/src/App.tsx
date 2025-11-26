@@ -7,6 +7,7 @@ import SignupPageDriver from "./pages/Auth/SignUpDriver";
 import Signin from "./pages/Auth/SignIn";
 import {useAuthStore} from './store/UserAuth'
 import { useEffect } from "react";
+import {Loader} from 'lucide-react'
 
 const ProtectedRoutes = ({children}: { children: any })=>{
   const { isAuthenticated } = useAuthStore();
@@ -19,7 +20,19 @@ const ProtectedRoutes = ({children}: { children: any })=>{
 
 
 function App() {
-  const {checkAuth} = useAuthStore();
+  const {checkAuth, isCheckingAuth} = useAuthStore();
+
+  useEffect(()=>{
+    checkAuth()
+  },[checkAuth])
+
+   if (isCheckingAuth) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader size={50} color="black" className="animate-spin" />
+      </div>
+    );
+  }
 
 /// MORE FEATURES
 // 1. Book a ride on behalf of someone
@@ -42,10 +55,6 @@ function App() {
 // 6. Real-time tracking of rides
 // 7. Load history of rides for users and drivers
 // 8. Update Profile settings
-
-  useEffect(()=>{
-    checkAuth()
-  },[checkAuth])
   return (
     <>
         <Routes>

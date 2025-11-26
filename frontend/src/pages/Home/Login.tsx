@@ -12,12 +12,12 @@ function Login() {
         <p className="font-light mt-6">
             View past trips, tailored suggestions, support resources, and more.
         </p>
-        <div className="flex md:space-x-8 space-x-3 ">
-            <button className="bg-black  mt-6 md:px-6 px-2 py-3 rounded-xl text-white cursor-pointer">log in to your account</button>
-            <button className="font-medium cursor-pointer -mb-5">
+        <div className="flex items-center md:space-x-8 space-x-3 ">
+            <a href="/login" className="bg-black  mt-6 md:px-6 px-2 py-3 rounded-xl text-white cursor-pointer">log in to your account</a>
+            <a href="/signup" className="font-medium cursor-pointer -mb-5">
                 Create an account
                 <p className="border-b p-1 text-gray-400 hover:text-black"></p>
-            </button>
+            </a>
         </div>
       </div>
       
