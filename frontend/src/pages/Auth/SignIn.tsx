@@ -9,7 +9,7 @@ interface FormData {
 }
 
 const Signin: React.FC = () => {
-  const {login} = useAuthStore();
+  const {login,isLoading} = useAuthStore();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -67,7 +67,7 @@ const Signin: React.FC = () => {
             type="submit"
             className="w-full bg-black text-white py-2 rounded-md hover:bg-black/80 transition-colors"
           >
-            Log in
+            {isLoading ? "loging in...": "Log in"}
           </button>
         </form>
 

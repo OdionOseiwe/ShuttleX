@@ -16,7 +16,7 @@ function Hero() {
                 Book a ride, track your driver in real time, and get to your destination safely and on time.
                 No stress, no waiting, just smooth movement across campus.
             </p>
-            <a href="/login" className="bg-black  mt-6 md:px-10 px-6 py-2 text-xl md:font-semibold rounded-xl text-white">Ride now</a href="/login">
+            <button className="bg-black mt-6 md:px-10 px-6 py-2 text-xl md:font-semibold rounded-xl text-white">Ride now</button>
         </div>
         <div>
             <Slidder/>
