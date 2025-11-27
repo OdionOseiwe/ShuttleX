@@ -1,19 +1,15 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, X } from "lucide-react";
 
 
-export default function ApproveDriverPage() {
-  const [pendingDrivers, setPendingDrivers] = useState([]);
-
-//   useEffect(() => {
-//     async function load() {
-//       const res = await fetch("/api/admin/pending-drivers");
-//       const data = await res.json();
-//       setPendingDrivers(data);
-//     }
-//     load();
-//   }, []);
+export default function ApproveDriverPage({nin,vehicleNumber,vehicleType,email,name,mobileNumber}:
+  {
+    nin:string, 
+    vehicleNumber:string, 
+    vehicleType:string,
+    email:string, 
+    name:string, 
+    mobileNumber:string }) {
 
   return (
     <div className="md:w-2/3 w-full m-auto p-10">
@@ -27,12 +23,12 @@ export default function ApproveDriverPage() {
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="rounded-2xl shadow-md p-4">
-                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">Email: </p>
-                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">Name: </p>
-                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">Phone: </p>
-                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">Vehicle Type:</p>
-                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">NIN: </p>
-                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">vehicle Number:</p>
+                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">Email:{"   "} <span className="font-semibold">{email}</span> </p>
+                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">Name:{"   "} <span className="font-semibold">{name}</span> </p>
+                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">Phone: {"   "} <span className="font-semibold">{mobileNumber}</span> </p>
+                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">Vehicle Type:{"   "} <span className="font-semibold">{vehicleType}</span></p>
+                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">NIN: {"  "} <span className="font-semibold">{nin} </span></p>
+                <p className="text-xl p-3 bg-gray-100 my-4 mx-1  rounded-xl">vehicle Number:{"  "} <span className="font-semibold">{vehicleNumber}</span></p>
 
                 <div className="flex gap-4 mt-4">
                   <button

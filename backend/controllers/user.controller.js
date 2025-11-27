@@ -77,7 +77,7 @@ export const signUp = async (req, res) => {
         await Notification.create({
           userId: admin._id,
           title: "New Driver Signup",
-          data: { driverId: driver._id, driverName: user.name },
+          data: {user:user.name, email:user.email, mobileNumber:user.mobileNumber, ...driver},
         });
       }
     }

@@ -18,7 +18,8 @@ function NotificationDetails({}) {
         console.log(error);
       }
     }
-  
+    console.log(notification);
+    
     useEffect(() => {
         getUserNotificationbyId(id._id);
         setRead();
@@ -28,7 +29,15 @@ function NotificationDetails({}) {
     <>
         <SideBar/>
         {notification && user?.role === "admin" && notification.title === "New Driver Signup"
-        && <ApproveDriverPage/>
+        && <ApproveDriverPage 
+          nin={notification.data.nin} 
+          vehicleNumber={notification.data.vehicleNumber} 
+          vehicleType={notification.data.vehicleType}
+          email={notification.data.email}
+          name={notification.data.user}
+          mobileNumber={notification.data.mobileNumber}
+
+        />
         }
         {notification && user?.role === "driver" && notification.title === "new Ride booked"
         && <DriverRideRequest/>
