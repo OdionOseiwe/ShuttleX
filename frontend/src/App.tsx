@@ -12,8 +12,8 @@ import { ToastContainer } from 'react-toastify';
 import HistoryPage from "./pages/student/History";
 import UpdateProfile from "./pages/student/Update_Profile";
 import ApproveDriverPage from "./components/Approve_driver";
-import NotificationList from "./components/NotificationList";
-
+import DriverRideRequest from './components/DriverRideRequest'
+import NotificationDetails from './components/Notification_detail'
 
 const ProtectedRoutes = ({children}: { children: any })=>{
   const { isAuthenticated } = useAuthStore();
@@ -73,7 +73,7 @@ function App() {
           {/* <Route path="/" element={<Home />} /> */}
           {/* <Route path="/" element={<Home />} /> */}
           
-          <Route path="/notification" element={
+          <Route path="/notifications" element={
             <ProtectedRoutes>
               {/* <NotificationList notifications = {[]} onDelete ={()=>{}}/> */}
               <Notifications/>
@@ -92,7 +92,9 @@ function App() {
           <Route path= '/signup' element= {<SignupPage/>}/>
           <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
           <Route path= '/login' element= {<Signin/>}/>
-          <Route path= '/approve-driver' element= {<ApproveDriverPage/>}/>
+          <Route path= 'notifications/approve-driver/:_id' element= {<ApproveDriverPage/>}/>
+          <Route path= 'notifications/ride-request/:_id' element= {<DriverRideRequest/>}/>
+          <Route path= 'notifications/detail/:_id' element= {<NotificationDetails/>}/>
         </Routes>
         <ToastContainer />
     </>

@@ -368,4 +368,50 @@ export const getUserNotifications = async (req, res) => {
   }
 };
 
-//
+//✅  get notificationd by id
+export const getUserNotificationbyId = async (req, res) => {
+  try {
+    const { _id } = req.params;
+
+    const notification = await Notification.findOne({ _id});
+    if (!notification) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "No notifications found" });
+    }
+    return res.status(200).json({ success: true, notification });
+
+  } catch (error) {
+    console.log("Get Notifications error:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "Error occurred while fetching notifications",
+    });
+  }
+};
+
+export const setNotificationToUnread = async(req,res)=>{
+  try {
+    const { _id } = req.params;
+    const notification = await Notification.findOne({_id})
+    if(!notification){
+      return res
+        .status(404)
+        .json({ success: false, msg: "No notifications found" });
+    }
+    notification.read = true;
+    await notification.save()
+        return res.status(200).json({
+      success: true,
+      msg: "Notification marked as read",
+      notification,
+    });
+
+  } catch (error) {
+     return res.status(500).json({
+      success: false,
+      msg: "Error occurred while set read message",
+    });
+  }
+} 
+

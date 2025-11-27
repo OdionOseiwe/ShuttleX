@@ -1,7 +1,9 @@
 import express from "express"
 const router = express.Router()
 import {protect} from '../middleware/protect.js'
-import {signUp, login, logout,rejectDriver,updateDriversProfile,updateDriverStatus,checkAuth,approveDriver,getPendingDrivers} from '../controllers/User.controller.js'
+import {signUp, login, logout,rejectDriver,updateDriversProfile,
+        updateDriverStatus,checkAuth,approveDriver,getPendingDrivers,
+        getUserNotifications,getUserNotificationbyId,setNotificationToUnread} from '../controllers/User.controller.js'
 
 
 // Auth routes
@@ -9,6 +11,8 @@ router.post("/signup", signUp);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/check-auth", protect, checkAuth);
+router.get("/notifications", protect, getUserNotifications);
+router.get("/notification/:_id", protect, getUserNotificationbyId);
 
 // Admin routes
 router.post('/drivers/:id/approve', protect, approveDriver);
@@ -18,6 +22,7 @@ router.get('/drivers/pending', protect, getPendingDrivers);
 // Driver routes
 router.patch('/driver/profile', protect, updateDriversProfile);
 router.patch('/driver/status', protect, updateDriverStatus);
+router.patch("/notification/read/:_id", protect, setNotificationToUnread);
 
 
 export default router // connected to server.js

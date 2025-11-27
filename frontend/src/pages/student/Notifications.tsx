@@ -25,7 +25,7 @@ function Notifications() {
   return (
     <div className="py-5 z-1 ">
       <SideBar />
-      <NotificationList notifications={driverNotifications} />
+      <NotificationList />
     </div>
   );
 }

@@ -16,7 +16,7 @@ function Profile() {
     }
     const profile = [
         {name: 'Book Ride', icon: Book, link:"book-ride"},
-        {name: 'Notifications', icon: Bell, link:"notification"},
+        {name: 'Notifications', icon: Bell, link:"notifications"},
         {name: 'history', icon: History, link:"history"},
         {name: 'Profile', icon: UserPen, link:"update-profile"},
 
