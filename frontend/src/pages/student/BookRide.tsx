@@ -74,7 +74,7 @@ function BookRide() {
      
      <SideBar/>
 
-      <div className="md:flex md:px-20 px-10  m-2 md:space-x-8 mt-10">
+      <div className="md:flex md:px-20 px-5  m-2 md:space-x-8 mt-10">
         <BookRideComponent
           selectedOrigin={selectedOrigin}
           setSelectedOrigin={setSelectedOrigin}

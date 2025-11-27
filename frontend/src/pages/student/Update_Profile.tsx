@@ -1,7 +1,6 @@
 import SideBar from '../../layout/SideBar';
 import {useAuthStore} from '../../store/UserAuth'
 import { useState } from "react";
-import { Mail } from "lucide-react";
 
 export default function UpdateProfile() {
   const [editing, setEditing] = useState(false);
@@ -11,8 +10,7 @@ export default function UpdateProfile() {
   return (
     <div className="py-5 z-1">
         <SideBar/>
-      <div className="">
-        <div className="p-10">
+        <div className="md:p-10 p-5">
           <div className="flex justify-between items-center mb-10">
             <div>
               <h1 className="text-2xl font-bold text-gray-800">Welcome {user?.name}</h1>
@@ -74,7 +72,6 @@ export default function UpdateProfile() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 

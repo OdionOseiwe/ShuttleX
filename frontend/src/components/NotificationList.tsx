@@ -17,8 +17,8 @@ function NotificationList({ notifications, onDelete }: NotificationListProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full md:w-3/4 mx-auto p-4 md:px-20 px-10">
-      <h2 className="text-xl font-bold mb-4">Notifications</h2>
+    <div className="w-full md:w-3/4 mx-auto p-4 md:px-20 px-5">
+      <h2 className="text-2xl font-bold mb-4">Notifications</h2>
 
       <div className="space-y-3">
         {notifications.map((item) => (

@@ -6,7 +6,7 @@ function HistoryPage() {
     <div className="py-5 z-1">
         <SideBar/>
         <div className="p-10 max-w-4xl mx-auto text-gray-800">
-            <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
+            <h1 className="text-2xl font-bold mb-8 flex items-center gap-3">
                 <History />  Activity History
             </h1>
 
