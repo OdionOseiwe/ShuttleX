@@ -30,6 +30,7 @@ const Signin: React.FC = () => {
       toast.success(`Welcome ${user?.name}`)
     } catch (error) {
       toast.error(error.response.data.msg || "Error occured while loging in"); 
+            console.log(error);
     }
   };
 

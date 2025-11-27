@@ -63,7 +63,7 @@ const SignupPage: React.FC = () => {
         "",
         "",
         "",
-        ""
+        0
       )
       navigator('/login')
       toast.success(`Sign Up successful`)
@@ -71,8 +71,8 @@ const SignupPage: React.FC = () => {
     } catch (error) {
       setErrors(validationErrors);
       toast.error(error.response.data.msg || "Error signing uo");
-    }
-    
+      console.log(error);
+    } 
   };
 
   return (
