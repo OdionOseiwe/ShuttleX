@@ -1,6 +1,8 @@
 // SignupPage.tsx
 import React, { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import {useAuthStore} from "../../store/UserAuth"
+import { toast } from 'react-toastify';
 
 interface FormData {
   name: string;
@@ -9,7 +11,6 @@ interface FormData {
   confirmPassword: string;
   mobile_number:string;
   nin:string,
-  vehicle_type:string;
   vehicle_number:string;
   capacity:string;
   photo:string;
@@ -32,18 +33,23 @@ const SignupPageDriver: React.FC = () => {
     confirmPassword: "",
     mobile_number: "",
     nin:"",
-    vehicle_type:"",
     vehicle_number:"",
     capacity:"",
     photo:"",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
+  const [vehicleType, setVehicleType] = useState("");
   const navigator = useNavigate();
+  const {signUp, isLoading, error} = useAuthStore();
 
   const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+   const handleSelectVehicleType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setVehicleType(e.target.value);
+    };
 
   const validate = (): FormErrors => {
     const newErrors: FormErrors = {};
@@ -57,16 +63,33 @@ const SignupPageDriver: React.FC = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e:FormEvent) => {
+  const handleSubmit = async(e:FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length === 0) {
-      console.log("Form Submitted", formData);
-      // TODO: Add API call here
-      navigator('/login')
-    } else {
-      setErrors(validationErrors);
+    try {
+      if (Object.keys(validationErrors).length === 0) {
+        console.log(formData, vehicleType)
+        await signUp(
+          formData.email,
+          formData.password,
+          formData.name,
+          "driver",
+          formData.mobile_number,
+          formData.nin,
+          formData.vehicle_number,
+          vehicleType,
+          Number(formData.capacity)
+        )
+        navigator('/login')
+         toast.success(`Sign up successful`)
+      
     }
+    } catch (error) {
+      toast.error(error.response.data.msg || "Error occured while registering");
+      setErrors(validationErrors);
+      console.log(error)
+    }
+   
   };
 
   return (
@@ -117,10 +140,10 @@ const SignupPageDriver: React.FC = () => {
             <select
               className="w-full p-3 mt-4 bg-gray-100 rounded-xl outline-none cursor-pointer
                     border-2 border-transparent focus:border-black focus:bg-white"
-             value={formData.vehicle_type} onChange={()=>handleChange} name="vehicle_type">
+             value={vehicleType} onChange={handleSelectVehicleType} name="vehicle_type">
                 <option disabled>choose vehicle type</option>
-                <option value="Bus" >Bus</option>
-                <option value="keke" >Keke</option>
+                <option value="keke" >keke</option>
+                <option value="bus" >bus</option>
             </select>
             {/* {errors.password && (
               <p className="text-red-500 text-sm">{errors.password}</p>
@@ -213,7 +236,7 @@ const SignupPageDriver: React.FC = () => {
             type="submit"
             className="w-full bg-black text-white py-2 rounded-md hover:bg-black/80 transition-colors"
           >
-            register as a Driver
+            {isLoading ? "registering...": "register as a Driver"}
           </button>
         </form>
 

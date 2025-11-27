@@ -10,10 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^5.1.0",
     "@mapbox/search-js-react": "^1.5.0",
     "@react-google-maps/api": "^2.20.7",
     "@tailwindcss/vite": "^4.1.17",
+    "@vitejs/plugin-react": "^5.1.0",
     "axios": "^1.13.2",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
@@ -21,7 +21,9 @@
     "mapbox-gl": "^3.16.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.9.6",
+    "react-toastify": "^11.0.5",
     "socket.io-client": "^4.8.1",
     "swiper": "^12.0.3",
     "tailwindcss": "^4.1.17",
@@ -41,6 +43,6 @@
     "typescript-eslint": "^8.45.0"
   },
   "engines": {
-  "node": ">=20.19.0"
-}
+    "node": ">=20.19.0"
+  }
 }

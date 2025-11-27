@@ -4,8 +4,8 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 // Use VITE_BACKEND_URL or fallback
-const HOST_URL = import.meta.env.VITE_BACKEND_URL ;
-//  "http://localhost:5000/TriRide/api";
+// const HOST_URL = import.meta.env.VITE_BACKEND_URL ;
+const HOST_URL = "http://localhost:5000/TriRide/api";
 
 // User type
 type User = {
@@ -30,11 +30,11 @@ type AuthStore = {
     password: string,
     name: string,
     role: string,
+    mobile_number?: string,
     nin?: string,
     vehicle_number?: string,
     vehicle_type?: string,
-    capacity?: string,
-    mobile_number?: string
+    capacity?: number,
   ) => Promise<void>;
 
   login: (email: string, password: string) => Promise<void>;

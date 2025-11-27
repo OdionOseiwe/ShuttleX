@@ -44,7 +44,6 @@ export const signUp = async (req, res) => {
       mobileNumber,
       role,
     });
-    await user.save();
 
     // Optional: welcome notification
     await Notification.create({
@@ -70,6 +69,7 @@ export const signUp = async (req, res) => {
       });
       globalDriver = driver;
       await driver.save();
+      await user.save();
 
       // Notify admin (optional) about new pending driver
       // Assuming admins are fetched from DB

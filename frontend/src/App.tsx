@@ -8,6 +8,10 @@ import Signin from "./pages/Auth/SignIn";
 import {useAuthStore} from './store/UserAuth'
 import { useEffect } from "react";
 import {Loader} from 'lucide-react'
+import { ToastContainer } from 'react-toastify';
+import History from "./pages/student/History";
+import UpdateProfile from "./pages/student/Update_Profile";
+
 
 const ProtectedRoutes = ({children}: { children: any })=>{
   const { isAuthenticated } = useAuthStore();
@@ -17,7 +21,6 @@ const ProtectedRoutes = ({children}: { children: any })=>{
   }
   return children
 }
-
 
 function App() {
   const {checkAuth, isCheckingAuth} = useAuthStore();
@@ -73,10 +76,21 @@ function App() {
               <Notifications/>
             </ProtectedRoutes>
           } /> 
+          <Route path="/history" element={
+            <ProtectedRoutes>
+              <History/>
+            </ProtectedRoutes>
+          } /> 
+          <Route path="/update-profile" element={
+            <ProtectedRoutes>
+              <UpdateProfile/>
+            </ProtectedRoutes>
+          } /> 
           <Route path= '/signup' element= {<SignupPage/>}/>
           <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
           <Route path= '/login' element= {<Signin/>}/>
         </Routes>
+        <ToastContainer />
     </>
   )
 }

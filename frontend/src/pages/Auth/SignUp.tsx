@@ -2,6 +2,7 @@
 import React, { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {useAuthStore} from '../../store/UserAuth'
+import { toast } from 'react-toastify';
 
 interface FormData {
   name: string;
@@ -51,7 +52,8 @@ const SignupPage: React.FC = () => {
   const handleSubmit = async(e:FormEvent) => {
     e.preventDefault();
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length === 0) {
+    try {
+      if (Object.keys(validationErrors).length === 0) {
       await signUp(
         formData.email,
         formData.password,
@@ -64,10 +66,13 @@ const SignupPage: React.FC = () => {
         ""
       )
       navigator('/login')
-    } else {
-      setErrors(validationErrors);
-      console.log(error);
+      toast.success(`Sign Up successful`)
     }
+    } catch (error) {
+      setErrors(validationErrors);
+      toast.error(error.response.data.msg || "Error signing uo");
+    }
+    
   };
 
   return (

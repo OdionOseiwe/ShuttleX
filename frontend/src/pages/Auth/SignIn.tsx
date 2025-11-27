@@ -2,6 +2,7 @@
 import React, { useState, type FormEvent} from "react";
 import { useNavigate } from "react-router-dom";
 import {useAuthStore} from '../../store/UserAuth'
+import {toast} from 'react-toastify'
 
 interface FormData {
   email: string;
@@ -9,7 +10,7 @@ interface FormData {
 }
 
 const Signin: React.FC = () => {
-  const {login,isLoading} = useAuthStore();
+  const {login,isLoading, user} = useAuthStore();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -26,8 +27,9 @@ const Signin: React.FC = () => {
     try {
       await login(formData.email, formData.password)
       navigator('/book-ride')
+      toast.success(`Welcome ${user?.name}`)
     } catch (error) {
-        console.log(error);
+      toast.error(error.response.data.msg || "Error occured while loging in"); 
     }
   };
 
