@@ -9,8 +9,10 @@ import {useAuthStore} from './store/UserAuth'
 import { useEffect } from "react";
 import {Loader} from 'lucide-react'
 import { ToastContainer } from 'react-toastify';
-import History from "./pages/student/History";
+import HistoryPage from "./pages/student/History";
 import UpdateProfile from "./pages/student/Update_Profile";
+import ApproveDriverPage from "./components/Approve_driver";
+import NotificationList from "./components/NotificationList";
 
 
 const ProtectedRoutes = ({children}: { children: any })=>{
@@ -73,12 +75,13 @@ function App() {
           
           <Route path="/notification" element={
             <ProtectedRoutes>
+              {/* <NotificationList notifications = {[]} onDelete ={()=>{}}/> */}
               <Notifications/>
             </ProtectedRoutes>
           } /> 
           <Route path="/history" element={
             <ProtectedRoutes>
-              <History/>
+              <HistoryPage/>
             </ProtectedRoutes>
           } /> 
           <Route path="/update-profile" element={
@@ -89,6 +92,7 @@ function App() {
           <Route path= '/signup' element= {<SignupPage/>}/>
           <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
           <Route path= '/login' element= {<Signin/>}/>
+          <Route path= '/approve-driver' element= {<ApproveDriverPage/>}/>
         </Routes>
         <ToastContainer />
     </>

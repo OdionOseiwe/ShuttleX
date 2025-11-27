@@ -67,7 +67,7 @@ const Signin: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded-md hover:bg-black/80 transition-colors"
+            className="cursor-pointer w-full bg-black text-white py-2 rounded-md hover:bg-black/80 transition-colors"
           >
             {isLoading ? "loging in...": "Log in"}
           </button>

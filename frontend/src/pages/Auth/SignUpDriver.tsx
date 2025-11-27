@@ -234,7 +234,7 @@ const SignupPageDriver: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded-md hover:bg-black/80 transition-colors"
+            className="cursor-pointer w-full bg-black text-white py-2 rounded-md hover:bg-black/80 transition-colors"
           >
             {isLoading ? "registering...": "register as a Driver"}
           </button>

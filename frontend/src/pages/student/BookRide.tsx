@@ -82,7 +82,7 @@ function BookRide() {
           setSelectedDestination={setSelectedDestination}
           calculateRoute={handleBooking}
         />
-        {/* <Driverinfo/> */}
+        {/* <RideRequested/> */}
 
         {/* <Driverinfo/> */}
         <div

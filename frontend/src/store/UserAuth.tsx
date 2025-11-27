@@ -12,6 +12,9 @@ type User = {
   id: string;
   email: string;
   name: string;
+  createdAt:string;
+  mobileNumber:number;
+  role:string;
 } | null;
 
 // Store type
