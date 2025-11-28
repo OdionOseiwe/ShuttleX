@@ -18,6 +18,7 @@ function NotificationDetails({}) {
         console.log(error);
       }
     }
+
     console.log(notification);
     
     useEffect(() => {
@@ -28,18 +29,21 @@ function NotificationDetails({}) {
   return (
     <>
         <SideBar/>
-        {notification && user?.role === "admin" && notification.title === "New Driver Signup"
+        {notification && user?.user?.role === "admin"
         && <ApproveDriverPage 
-          nin={notification.data.nin} 
-          vehicleNumber={notification.data.vehicleNumber} 
-          vehicleType={notification.data.vehicleType}
-          email={notification.data.email}
-          name={notification.data.user}
-          mobileNumber={notification.data.mobileNumber}
+          driver={{
+                  id:notification.data.userId,
+                  nin: notification.data.nin,
+                  vehicleNumber: notification.data.vehicleNumber,
+                  vehicleType: notification.data.vehicleType,
+                  email: notification.data.email,
+                  name: notification.data.user,
+                  mobileNumber: notification.data.mobileNumber,
+            }}
 
         />
         }
-        {notification && user?.role === "driver" && notification.title === "new Ride booked"
+        {notification && user?.user?.role === "driver" 
         && <DriverRideRequest/>
         }
     </>

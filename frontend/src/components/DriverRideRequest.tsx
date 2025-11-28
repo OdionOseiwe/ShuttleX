@@ -1,4 +1,5 @@
 import { MapPin, ArrowRight, WalletMinimal, Timer } from "lucide-react";
+import { motion } from "framer-motion";
 
 function DriverRideRequest({}) {
   return (
@@ -8,7 +9,9 @@ function DriverRideRequest({}) {
         🚗 New Ride Request
       </h2>
 
-      <div className="space-y-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+        className="space-y-4">
 
         <div className="flex items-start gap-3">
           <MapPin className="text-green-500" />
@@ -40,7 +43,7 @@ function DriverRideRequest({}) {
           <p className="font-medium">₦{400}</p>
         </div>
 
-      </div>
+      </motion.div>
 
       <button
         // onClick={onAccept}

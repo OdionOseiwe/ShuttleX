@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { type } from "os";
 
 const driverSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -12,6 +11,7 @@ const driverSchema = new mongoose.Schema({
     enum: ["pending","rejected", "approved","available", "unavailable", "on-trip"], 
     default: "pending" 
   }, // pending = waiting for admin approval
+  isVerified:{type:Boolean},
   location: {
     lat: { type: Number },
     lng: { type: Number }

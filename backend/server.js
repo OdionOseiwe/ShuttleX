@@ -49,7 +49,20 @@ io.on('connection', (socket) => {
     // EMIT: broadcast to all connected students
     // So students can see live driver positions on their map
     io.emit("updateDriverLocation", data);
-  });});
+  });
+
+  socket.on("registerDriver", (driver) => {
+    if (driver.isVerified) {
+      socket.join("verifiedDrivers");
+      console.log("Driver joined verified room:", socket.id);
+    }
+  });
+
+  socket.on("UserBooked", (data)=>{
+    console.log("user location", data);
+    io.to("verifiedDrivers").emit("broadcastToVerifiedDrivers", data);
+  })
+});
 
 // serving static files in production
 // So the express server can serve the react frontend

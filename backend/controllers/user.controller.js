@@ -66,6 +66,7 @@ export const signUp = async (req, res) => {
         vehicleNumber,
         capacity,
         status: "pending",
+        isVerified:false,
       });
       globalDriver = driver;
       await driver.save();
@@ -135,18 +136,21 @@ export const login = async (req, res) => {
 // ✅ Approve Driver (Admin only)
 export const approveDriver = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { _id } = req.params;
     const user = await User.findById(req.userId);
     if (!user || user.role !== "admin")
       return res
         .status(403)
         .json({ success: false, msg: "Only admin can approve drivers" });
 
-    const driver = await Driver.findOne({ userId: id });
+    const driver = await Driver.findOne({ userId: _id });
     if (!driver)
       return res.status(404).json({ success: false, msg: "Driver not found" });
-
+    if(driver.status === "approved"){
+      return res.status(500).json({ success: false, msg: "already approved" });
+    }
     driver.status = "approved";
+    driver.isVerified= true;
     await driver.save();
 
     // Notify driver
@@ -170,14 +174,14 @@ export const approveDriver = async (req, res) => {
 // ✅ Reject Driver (Admin only)
 export const rejectDriver = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { _id } = req.params;
     const user = await User.findById(req.userId);
     if (!user || user.role !== "admin")
       return res
         .status(403)
         .json({ success: false, msg: "Only admin can reject drivers" });
 
-    const driver = await Driver.findOne({ userId: id });
+    const driver = await Driver.findOne({ userId: _id });
     if (!driver)
       return res.status(404).json({ success: false, msg: "Driver not found" });
 
@@ -334,13 +338,16 @@ export const logout = async (req, res) => {
 // ✅ Check Auth
 export const checkAuth = async (req, res) => {
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.userId);    
     if (!user)
       return res.status(404).json({ success: false, msg: "User not found" });
-
+    let driver = null;
+    if(user.role === "driver"){
+      driver = await Driver.findOne({userId:req.userId});
+    }
     return res
       .status(200)
-      .json({ success: true, user: { ...user._doc, password: undefined } });
+      .json({ success: true, user: { ...user._doc,...driver, password: undefined } });
   } catch (error) {
     console.error("Check Auth Error:", error);
     return res

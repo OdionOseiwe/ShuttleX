@@ -8,7 +8,7 @@ function NotificationList() {
   const {getNoficationsForUser,NotificationsArray} = useNotificationStore()
   useEffect(() => {
     getNoficationsForUser();
-  }, []);
+  }, []);  
 
   return (
     <div className="w-full md:w-3/4 mx-auto p-4 md:px-20 px-5">

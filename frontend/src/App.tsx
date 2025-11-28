@@ -26,7 +26,7 @@ const ProtectedRoutes = ({children}: { children: any })=>{
 
 function App() {
   const {checkAuth, isCheckingAuth} = useAuthStore();
-
+    
   useEffect(()=>{
     checkAuth()
   },[checkAuth])
@@ -92,8 +92,6 @@ function App() {
           <Route path= '/signup' element= {<SignupPage/>}/>
           <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
           <Route path= '/login' element= {<Signin/>}/>
-          <Route path= 'notifications/approve-driver/:_id' element= {<ApproveDriverPage/>}/>
-          <Route path= 'notifications/ride-request/:_id' element= {<DriverRideRequest/>}/>
           <Route path= 'notifications/detail/:_id' element= {<NotificationDetails/>}/>
         </Routes>
         <ToastContainer />

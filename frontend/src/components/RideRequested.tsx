@@ -1,6 +1,17 @@
 import { MapPin,WalletMinimal,ArrowRight } from "lucide-react"
+import { useBookStore } from "../store/useBooking"
 
 function RideRequested() {
+    const {cancelRide} = useBookStore()
+
+    const cancel = async()=>{
+      try {
+        await cancelRide('692a13a4e01eba1b5fea329f')
+      } catch (error) {
+        
+      }
+    }
+  
   return (
     <div className="md:w-1/3 h-fit border-2 border-gray-100 rounded-xl p-4 shadow-xs">
       <div>
@@ -29,7 +40,7 @@ function RideRequested() {
         </div>
         <p className="flex mt-5"> <WalletMinimal/> <span className="mx-3 font-semibold ">Cash</span></p>
       </div>
-      <div className=" bg-gray-100 hover:bg-gray-200 text-center py-3 px-6 rounded-xl mt-5 text-red-500 font-semibold">Cancel ride</div>
+      <button onClick={cancel} className="w-full bg-gray-100 hover:bg-gray-200 text-center py-3 px-6 rounded-xl mt-5 text-red-500 font-semibold">Cancel ride</button >
     </div>
   )
 }

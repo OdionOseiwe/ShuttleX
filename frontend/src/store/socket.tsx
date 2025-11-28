@@ -1,15 +1,15 @@
-// import { io } from "socket.io-client";
-// import { create } from "zustand";
+import { io } from "socket.io-client";
+import { create } from "zustand";
 
-// export const useSocketStore = create((set) => ({
-//   socket: null,
-//   connectSocket: () => {
-//     const socket = io("http://localhost:5000", {
-//       transports: ["websocket"],
-//     });
-//     set({ socket });
-//   },
-// }));
+export const useSocketStore = create((set) => ({
+  socket: null,
+  connectSocket: () => {
+    const socket = io("http://localhost:5000", {
+      transports: ["websocket"],
+    });
+    set({ socket });
+  },
+}));
 
  // connect to your backend
 //   const socket = io("http://localhost:5000");

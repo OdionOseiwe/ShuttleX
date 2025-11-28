@@ -15,8 +15,8 @@ router.get("/notifications", protect, getUserNotifications);
 router.get("/notification/:_id", protect, getUserNotificationbyId);
 
 // Admin routes
-router.post('/drivers/:id/approve', protect, approveDriver);
-router.post('/drivers/:id/reject', protect, rejectDriver);
+router.post('/drivers/:_id/approve', protect, approveDriver);
+router.post('/drivers/:_id/reject', protect, rejectDriver);
 router.get('/drivers/pending', protect, getPendingDrivers);
 
 // Driver routes

@@ -142,8 +142,8 @@ const SignupPageDriver: React.FC = () => {
                     border-2 border-transparent focus:border-black focus:bg-white"
              value={vehicleType} onChange={handleSelectVehicleType} name="vehicle_type">
                 <option disabled>choose vehicle type</option>
-                <option value="keke" >keke</option>
                 <option value="bus" >bus</option>
+                <option value="keke" >keke</option>
             </select>
             {/* {errors.password && (
               <p className="text-red-500 text-sm">{errors.password}</p>

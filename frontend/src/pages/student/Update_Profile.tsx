@@ -7,14 +7,15 @@ export default function UpdateProfile() {
   const {user} = useAuthStore();
   console.log(user);
   
+  
   return (
     <div className="py-5 z-1">
         <SideBar/>
         <div className="md:p-10 p-5">
           <div className="flex justify-between items-center mb-10">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">Welcome {user?.name}</h1>
-              <p className="text-gray-500 text-sm">{new Date(user?.createdAt).toLocaleString()}</p>
+              <h1 className="text-2xl font-bold text-gray-800">Welcome {user?.user?.name}</h1>
+              <p className="text-gray-500 text-sm">{new Date(user?.user?.createdAt).toLocaleString()}</p>
             </div>
             {/* <div className="flex items-center gap-4">
               <img
@@ -32,8 +33,8 @@ export default function UpdateProfile() {
                   className="w-20 h-20 rounded-full"
                 />
                 <div>
-                  <h2 className="text-xl font-bold">{user?.name}</h2>
-                  <p className="text-gray-500">{user?.email}</p>
+                  <h2 className="text-xl font-bold">{user?.user?.name}</h2>
+                  <p className="text-gray-500">{user?.user?.email}</p>
                 </div>
               </div>
 
@@ -45,24 +46,24 @@ export default function UpdateProfile() {
             {/* Form Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className="block mb-1 font-medium">{user?.mobileNumber}</label>
+                <label className="block mb-1 font-medium">{user?.user?.mobileNumber}</label>
                 <input className='p-2 outline-none' placeholder="mobile number" disabled={!editing} />
               </div>
 
                 {
-                    user?.role === "driver" &&(
+                    user?.user?.role === "driver" &&(
                         <>
                             <div>
-                                <label className="block mb-1 font-medium">vehicle type</label>
-                                <input placeholder="mobile number" disabled={!editing} />
+                                <label className="block mb-1 font-medium">{user?.user?._doc?.vehicleType}</label>
+                                <input placeholder="vehicle type" disabled={!editing} />
                             </div>
                             <div>
-                                <label className="block mb-1 font-medium">vehicle number</label>
-                                <input placeholder="mobile number" disabled={!editing} />
+                                <label className="block mb-1 font-medium"> {user?.user?._doc?.vehicleNumber}</label>
+                                <input placeholder="vehicle number" disabled={!editing} />
                             </div> 
                             <div>
-                                <label className="block mb-1 font-medium">capacity</label>
-                                <input placeholder="mobile number" disabled={!editing} />
+                                <label className="block mb-1 font-medium">{user?.user?._doc?.capacity}</label>
+                                <input placeholder="capacity" disabled={!editing} />
                             </div>
                         </> 
                     )
