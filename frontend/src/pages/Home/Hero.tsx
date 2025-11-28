@@ -1,12 +1,27 @@
 import NavBar from "../../layout/NavBar";
 import Slidder from "../../components/Slidder";
+import { motion} from 'framer-motion'
 
-//TODO: add AAU logo to the hero section
+const fadeUp = {
+  hidden: { opacity: 0},
+  show: {
+    opacity: 1,
+    transition: { duration: 0.9, ease: "easeIn" }
+  }
+
+};
+
 function Hero() {
   return (
-    <section id="Hero" className="">
+    <motion.section
+      id="Hero"
+    >
       <NavBar/>
-      <div className="grid md:grid-cols-2 grid-cols-1 gap-10 pt-20 md:px-25 px-5">
+      <motion.div 
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="show"
+      className="grid md:grid-cols-2 grid-cols-1 gap-10 pt-20 md:px-25 px-5">
         <div className="md:mt-20 mt-10">
             <h1 className="lg:text-6xl text-3xl font-semibold md:leading-16">
                 Go anywhere with ShuttleX
@@ -21,8 +36,8 @@ function Hero() {
         <div>
             <Slidder/>
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   )
 }
 

@@ -1,7 +1,21 @@
+import { motion} from 'framer-motion'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 100 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: "easeOut" }
+  }
+};
 
 function About() {
   return (
-    <section id='About' className="bg-black text-white py-20 px-6 md:px-24">
+    <motion.section 
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="show"
+    id='About' className="bg-black text-white py-20 px-6 md:px-24">
 
       {/* Header */}
       <div className="text-center mb-14">
@@ -37,7 +51,7 @@ function About() {
         </div>
 
       </div>
-    </section>
+    </motion.section>
   )
 }
 

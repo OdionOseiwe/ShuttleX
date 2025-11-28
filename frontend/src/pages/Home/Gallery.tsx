@@ -1,3 +1,4 @@
+import { motion} from 'framer-motion'
 
 const images = [
   {src:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb9Mh4xLlPD8IO-FrhP6NQEH_1lFJsfWWZVA&s", span: "row-span-2" },
@@ -8,9 +9,21 @@ const images = [
   {src:"https://assets.cms.bolt.eu/Index_DT_Media_01_1_681eb62877.webp", span: "col-span-2" },
 ];
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 100 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: "easeOut" }
+  }
+};
 function Gallery() {
   return (
-     <section id="gallery" className="py-12 px-4 md:px-12 ">
+     <motion.section
+     variants={fadeUp}
+      initial="hidden"
+      whileInView="show"
+      id="gallery" className="py-12 px-4 md:px-12 ">
       <h2 className="text-3xl font-bold text-center mb-10">Gallery</h2>
 
       <div className="
@@ -34,7 +47,7 @@ function Gallery() {
           </div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }
 

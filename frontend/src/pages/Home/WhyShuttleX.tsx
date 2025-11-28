@@ -1,6 +1,20 @@
+import {motion} from 'framer-motion'
+const fadeUp = {
+  hidden: { opacity: 0, y: 100 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: "easeOut" }
+  }
+};
+
 function WhyShuttleX() {
   return (
-    <section id='whyShuttleX' className='grid md:grid-cols-2  gap-10 md:px-25 px-10 mt-20 items-center'>
+    <motion.section
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="show"
+    id='whyShuttleX' className='grid md:grid-cols-2  gap-10 md:px-25 px-10 mt-20 items-center'>
         <div>
             <h1 className='text-4xl font-semibold mb-10'>Why ShuttleX?</h1> 
             <div className='leading-10 text-xl'>
@@ -17,7 +31,7 @@ function WhyShuttleX() {
             className='h-100' />
         </div>
       
-    </section>
+    </motion.section>
   )
 }
 
