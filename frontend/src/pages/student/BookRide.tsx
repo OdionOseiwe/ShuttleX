@@ -7,10 +7,12 @@ import {drawRouteOnMap} from '../../utils/DrawRouteOnMap';
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import SideBar from '../../layout/SideBar';
-import { io } from "socket.io-client";
 import { useAuthStore } from '../../store/UserAuth';
 import {useBookStore} from '../../store/useBooking'
 import { toast } from 'react-toastify';
+import { socket } from "../../store/socket";
+import { useNavigate } from "react-router-dom";
+import Notification from '../../components/Notification';
 
 const center = {
   lat: 6.7446,
@@ -24,12 +26,12 @@ function BookRide() {
   const originMarkerRef = useRef<any>(null);
   const destinationMarkerRef = useRef<any>(null);
   const mapContainerRef = useRef<any>(null)
-  const socket = io("http://localhost:5000");
   const pickupStop = ekpomaStops.find((stop) => stop.address === selectedOrigin);
   const dropoffStop = ekpomaStops.find((stop) => stop.address === selectedDestination);
-  const [driver, setDriver] = useState({})
   const {user} = useAuthStore()
   const {bookRide,driveBook,pickup, dropoff} = useBookStore()
+  const [showNotification, setShowNotification] = useState(false);
+  const navigate = useNavigate();
 
   const addMarker = (coords:any, label:any, markerRef:any) => {
     if (!mapRef.current) return;
@@ -49,9 +51,16 @@ function BookRide() {
     try {
       const travelTime = await fetch(`https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${pickupStop.lon},${pickupStop.lat};${dropoffStop.lon},${dropoffStop.lat}?access_token=${mapboxgl.accessToken}`);
       const travelTimeData = await travelTime.json();
-      console.log(travelTimeData);
-      await bookRide(pickupStop.lat, pickupStop.lon, dropoffStop.lat, dropoffStop.lon)
-      
+
+      let objectTravel = travelTimeData.waypoints[0];
+      // await bookRide(pickupStop.lat, pickupStop.lon, dropoffStop.lat, dropoffStop.lon)
+
+      socket.emit("UserBooked", {
+        objectTravel,
+        pickupStop,
+        dropoffStop
+      });
+
       addMarker([pickupStop.lon, pickupStop.lat], "A", originMarkerRef);
       addMarker([dropoffStop.lon, dropoffStop.lat], "B", destinationMarkerRef);   
       await drawRouteOnMap(pickupStop, dropoffStop, mapRef);
@@ -75,7 +84,6 @@ useEffect(() => {
   
 }, [pickup, dropoff]);
 
-console.log(pickup, dropoff);
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
@@ -88,8 +96,6 @@ console.log(pickup, dropoff);
       center: [center.lng, center.lat],
       zoom: 12,
     });
-    setDriver(user?.user?._doc);
-
     return () => mapRef.current?.remove();
   }, []);
 
@@ -113,10 +119,31 @@ console.log(pickup, dropoff);
   // }, []);
 
   useEffect(() => {
-    if (driver) {
-      socket.emit("registerDriver", driver);
-    }
-  }, [driver]);    
+    console.log(user);
+    
+    if (!user?.user?._doc || !user?.user?._doc.isVerified) return;
+
+    // Connect socket and register driver
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+      socket.emit("registerDriver", user?.user?._doc);
+    });
+
+    const handleBroadcast = (data: any) => {
+      console.log("Ride request received:", data);
+
+      // Show notification when ride request is received
+      setShowNotification(true);
+    };
+
+    socket.on("broadcastToVerifiedDrivers", handleBroadcast);
+    // Cleanup function
+    return () => {
+      socket.off("broadcastToVerifiedDrivers", handleBroadcast);
+    };
+  }, [user]);
+    
+ 
     
   return (
     <div className="py-5 z-1">
@@ -132,6 +159,13 @@ console.log(pickup, dropoff);
             calculateRoute={handleBooking}
           />
         }
+        <Notification
+          open={showNotification}
+          onClose={() => setShowNotification(false)}
+          message="You have a new ride request!"
+          onRedirect={() => navigate("/ride-requests")}
+          duration={60000} // auto-close after 1 minute
+        />
         <div
           ref={mapContainerRef}
           className="w-full h-[500px] rounded-xl"
