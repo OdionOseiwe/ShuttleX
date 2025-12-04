@@ -4,11 +4,15 @@ import { useBookStore } from "../store/useBooking"
 function RideRequested() {
     const {cancelRide} = useBookStore()
 
+    const id = localStorage.getItem('id');
+    const clean = id.replace(/"/g, '');
+    
     const cancel = async()=>{
       try {
-        await cancelRide('692a13a4e01eba1b5fea329f')
+        await cancelRide(clean);
+        localStorage.clear();
       } catch (error) {
-        
+        console.log(error);
       }
     }
   

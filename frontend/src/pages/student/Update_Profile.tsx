@@ -1,6 +1,16 @@
 import SideBar from '../../layout/SideBar';
 import {useAuthStore} from '../../store/UserAuth'
 import { useState } from "react";
+import { motion} from 'framer-motion'
+
+const fadeUp = {
+  hidden: { opacity: 0},
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: "easeOut" }
+  }
+};
 
 export default function UpdateProfile() {
   const [editing, setEditing] = useState(false);
@@ -9,7 +19,11 @@ export default function UpdateProfile() {
   
   
   return (
-    <div className="py-5 z-1">
+    <motion.div 
+    variants={fadeUp}
+    initial='hidden'
+    whileInView='show'
+    className="py-5 z-1">
         <SideBar/>
         <div className="md:p-10 p-5">
           <div className="flex justify-between items-center mb-10">
@@ -72,7 +86,7 @@ export default function UpdateProfile() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import BookRideComponent from '../../components/BookRide';
-// import Driverinfo from '../../components/Driverinfo';
+import Driverinfo from '../../components/Driverinfo';
 import RideRequested from '../../components/RideRequested';
 import { ekpomaStops } from '../../utils/MockAddress';
 import {drawRouteOnMap} from '../../utils/DrawRouteOnMap';
@@ -11,8 +11,8 @@ import { useAuthStore } from '../../store/UserAuth';
 import {useBookStore} from '../../store/useBooking'
 import { toast } from 'react-toastify';
 import { socket } from "../../store/socket";
-import { useNavigate } from "react-router-dom";
 import Notification from '../../components/Notification';
+import { useBroadcastStore } from "../../store/useBroadcastStore";
 
 const center = {
   lat: 6.7446,
@@ -20,18 +20,24 @@ const center = {
 };
 
 function BookRide() {
+
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("");
+  const [showNotification, setShowNotification] = useState(false);
+  const [bookingId, setBookingId] = useState<string | null>(null);
+
   const mapRef = useRef<any>(null)
   const originMarkerRef = useRef<any>(null);
   const destinationMarkerRef = useRef<any>(null);
   const mapContainerRef = useRef<any>(null)
+  
   const pickupStop = ekpomaStops.find((stop) => stop.address === selectedOrigin);
   const dropoffStop = ekpomaStops.find((stop) => stop.address === selectedDestination);
+
   const {user} = useAuthStore()
-  const {bookRide,driveBook,pickup, dropoff} = useBookStore()
-  const [showNotification, setShowNotification] = useState(false);
-  const navigate = useNavigate();
+  const {bookRide,driveBooked,pickup, dropoff,acceptedRideBolean} = useBookStore()
+  const setBroadcastData = useBroadcastStore((s:any) => s.setBroadcastData);
+  const broadcastData = useBroadcastStore((s:any) => s.broadcastData); // optional
 
   const addMarker = (coords:any, label:any, markerRef:any) => {
     if (!mapRef.current) return;
@@ -53,12 +59,13 @@ function BookRide() {
       const travelTimeData = await travelTime.json();
 
       let objectTravel = travelTimeData.waypoints[0];
-      // await bookRide(pickupStop.lat, pickupStop.lon, dropoffStop.lat, dropoffStop.lon)
+      const booking = await bookRide(pickupStop.lat, pickupStop.lon, dropoffStop.lat, dropoffStop.lon)
 
       socket.emit("UserBooked", {
         objectTravel,
         pickupStop,
-        dropoffStop
+        dropoffStop,
+        booking,
       });
 
       addMarker([pickupStop.lon, pickupStop.lat], "A", originMarkerRef);
@@ -69,20 +76,20 @@ function BookRide() {
       toast.error(error.response.data.msg || "Error booking ride");
     }
   };
-  
-useEffect(() => {
-  if (!mapRef.current) return;
-  if (!bookRide) return;
-    // addMarker([pickup.lon, pickup.lat], "A", originMarkerRef);
-    // addMarker([dropoff.lon, dropoff.lat], "B", destinationMarkerRef);
 
-    drawRouteOnMap(
-      pickup,
-      dropoff,
-      mapRef
-    );
-  
-}, [pickup, dropoff]);
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (!bookRide) return;
+      // addMarker([pickup.lon, pickup.lat], "A", originMarkerRef);
+      // addMarker([dropoff.lon, dropoff.lat], "B", destinationMarkerRef);
+
+      drawRouteOnMap(
+        pickup,
+        dropoff,
+        mapRef
+      );
+    
+  }, [pickup, dropoff]);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -118,54 +125,63 @@ useEffect(() => {
   //   return () => navigator.geolocation.clearWatch(watchId);
   // }, []);
 
-  useEffect(() => {
-    console.log(user);
-    
-    if (!user?.user?._doc || !user?.user?._doc.isVerified) return;
+  useEffect(() => {    
+  if (!user?.user?._doc || !user?.user?._doc.isVerified) return;
 
-    // Connect socket and register driver
-    socket.on("connect", () => {
-      console.log("Socket connected:", socket.id);
-      socket.emit("registerDriver", user?.user?._doc);
-    });
+  const handleConnect = () => {
+    console.log("Socket connected:", socket.id);
+    socket.emit("registerDriver", user.user._doc);
+  };
 
-    const handleBroadcast = (data: any) => {
-      console.log("Ride request received:", data);
+  const handleBroadcast = (data: any) => {
+    console.log("Ride request received:", data);
+    console.log("User socket ID:", data.userSocketId);
 
-      // Show notification when ride request is received
-      setShowNotification(true);
-    };
+    const id = data.booking.id || data.booking;
 
-    socket.on("broadcastToVerifiedDrivers", handleBroadcast);
-    // Cleanup function
-    return () => {
-      socket.off("broadcastToVerifiedDrivers", handleBroadcast);
-    };
-  }, [user]);
-    
- 
-    
+    setBookingId(id);
+    setBroadcastData(data);
+    setShowNotification(true);
+  };
+
+  socket.on("connect", handleConnect);
+  socket.on("broadcastToVerifiedDrivers", handleBroadcast);
+
+  return () => {
+    socket.off("connect", handleConnect);
+    socket.off("broadcastToVerifiedDrivers", handleBroadcast);
+  };
+
+}, []); 
+
+  
   return (
     <div className="py-5 z-1">
      <SideBar/>
 
       <div className="md:flex md:px-20 px-5  m-2 md:space-x-8 mt-10">
-        {driveBook ?<RideRequested/>: 
+        {
+          driveBooked ? (
+            <RideRequested />
+          ) : broadcastData ? (
+            <Driverinfo />
+          ) : (
             <BookRideComponent
-            selectedOrigin={selectedOrigin}
-            setSelectedOrigin={setSelectedOrigin}
-            selectedDestination={selectedDestination}
-            setSelectedDestination={setSelectedDestination}
-            calculateRoute={handleBooking}
-          />
+              selectedOrigin={selectedOrigin}
+              setSelectedOrigin={setSelectedOrigin}
+              selectedDestination={selectedDestination}
+              setSelectedDestination={setSelectedDestination}
+              calculateRoute={handleBooking}
+            />
+          )
         }
-        <Notification
-          open={showNotification}
-          onClose={() => setShowNotification(false)}
-          message="You have a new ride request!"
-          onRedirect={() => navigate("/ride-requests")}
-          duration={60000} // auto-close after 1 minute
-        />
+          <Notification
+            open={showNotification}
+            onClose={() => setShowNotification(false)}
+            message="You have a new ride request!"
+            onRedirect={`requests/${bookingId}`}
+            duration={60000} // auto-close after 1 minute
+          />
         <div
           ref={mapContainerRef}
           className="w-full h-[500px] rounded-xl"

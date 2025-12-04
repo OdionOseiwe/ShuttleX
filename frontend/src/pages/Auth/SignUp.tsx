@@ -3,6 +3,16 @@ import React, { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {useAuthStore} from '../../store/UserAuth'
 import { toast } from 'react-toastify';
+import { motion} from 'framer-motion'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 100 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1, ease: "easeOut" }
+  }
+};
 
 interface FormData {
   name: string;
@@ -76,7 +86,11 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <motion.div
+    variants={fadeUp}
+    initial= 'hidden'
+    whileInView='show' 
+    className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-100 bg-white p-8 rounded-2xl shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -168,7 +182,7 @@ const SignupPage: React.FC = () => {
           </a>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

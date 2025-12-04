@@ -11,7 +11,7 @@ import {Loader} from 'lucide-react'
 import { ToastContainer } from 'react-toastify';
 import HistoryPage from "./pages/student/History";
 import UpdateProfile from "./pages/student/Update_Profile";
-import ApproveDriverPage from "./components/Approve_driver";
+import { initDriverListener } from "./store/driverListener";
 import DriverRideRequest from './components/DriverRideRequest'
 import NotificationDetails from './components/Notification_detail'
 
@@ -25,10 +25,11 @@ const ProtectedRoutes = ({children}: { children: any })=>{
 }
 
 function App() {
-  const {checkAuth, isCheckingAuth} = useAuthStore();
+  const {checkAuth, isCheckingAuth, user} = useAuthStore();
     
   useEffect(()=>{
     checkAuth()
+    initDriverListener(user);
   },[checkAuth])
 
    if (isCheckingAuth) {
@@ -93,6 +94,7 @@ function App() {
           <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
           <Route path= '/login' element= {<Signin/>}/>
           <Route path= 'notifications/detail/:_id' element= {<NotificationDetails/>}/>
+          <Route path= 'requests/:id' element= {<DriverRideRequest/>}/>
         </Routes>
         <ToastContainer />
     </>

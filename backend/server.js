@@ -58,8 +58,22 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on("rideAccept", (data) => {
+    const { userSocketId, bookingId } = data;
+
+    console.log("Driver accepted ride:", bookingId);
+
+    // notify ONLY the user who booked
+    io.to(userSocketId).emit("rideAccepted", {
+        bookingId,
+        driverId: socket.id   // the driver socket id
+ 
+    });
+  });
+
   socket.on("UserBooked", (data)=>{
     console.log("user location", data);
+    data.userSocketId = socket.id; 
     io.to("verifiedDrivers").emit("broadcastToVerifiedDrivers", data);
   })
 });

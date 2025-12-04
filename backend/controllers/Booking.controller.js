@@ -296,3 +296,18 @@ export const getAllBookingByUser = async (req, res) => {
       .json({ success: false, msg: "Error fetching bookings" });
   }
 };
+
+// ✅ get booking details
+export const getBookingDetails = async (req, res) =>{
+  const {id} = req.params;
+
+  try {
+    const booking = await Booking.findById(id)
+    if(!booking){
+      return res.status(404).json({success: false, msg:"Booking not found"})
+    }
+    return res.status(200).json({success:true, booking})
+  } catch (error) {
+    return res.status(404).json({success: false, msg:"Error while fetching booking details"})
+  }
+}
