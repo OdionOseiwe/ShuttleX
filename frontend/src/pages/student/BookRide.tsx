@@ -7,12 +7,16 @@ import {drawRouteOnMap} from '../../utils/DrawRouteOnMap';
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import SideBar from '../../layout/SideBar';
-import { useAuthStore } from '../../store/UserAuth';
-import {useBookStore} from '../../store/useBooking'
 import { toast } from 'react-toastify';
 import { socket } from "../../store/socket";
 import Notification from '../../components/Notification';
-import { useBroadcastStore } from "../../store/useBroadcastStore";
+import { useBookStore } from "../../store/useBooking";
+import { useAuthStore } from '../../store/UserAuth';
+import { useBroadcastStore } from '../../store/useBroadcastStore';
+
+// notify driver who accepted ride that user cancelled
+// notify user that driver cancelled accepted ride 
+// notify user that driver completed ride and change back to orginal page layout
 
 const center = {
   lat: 6.7446,
@@ -20,12 +24,8 @@ const center = {
 };
 
 function BookRide() {
-
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("");
-  const [showNotification, setShowNotification] = useState(false);
-  const [bookingId, setBookingId] = useState<string | null>(null);
-
   const mapRef = useRef<any>(null)
   const originMarkerRef = useRef<any>(null);
   const destinationMarkerRef = useRef<any>(null);
@@ -34,10 +34,10 @@ function BookRide() {
   const pickupStop = ekpomaStops.find((stop) => stop.address === selectedOrigin);
   const dropoffStop = ekpomaStops.find((stop) => stop.address === selectedDestination);
 
+  const {bookRide,pickup, dropoff,showNotification,hideNotification,bookingId,acceptedRideBolean,rideBookedBoolean,resetRideState} = useBookStore()
+  const { rideCancelled, setRideCancelled,rideAcceptedBroadcastData,resetBroadcast } = useBroadcastStore();
+
   const {user} = useAuthStore()
-  const {bookRide,driveBooked,pickup, dropoff,acceptedRideBolean} = useBookStore()
-  const setBroadcastData = useBroadcastStore((s:any) => s.setBroadcastData);
-  const broadcastData = useBroadcastStore((s:any) => s.broadcastData); // optional
 
   const addMarker = (coords:any, label:any, markerRef:any) => {
     if (!mapRef.current) return;
@@ -59,21 +59,25 @@ function BookRide() {
       const travelTimeData = await travelTime.json();
 
       let objectTravel = travelTimeData.waypoints[0];
-      const booking = await bookRide(pickupStop.lat, pickupStop.lon, dropoffStop.lat, dropoffStop.lon)
-
+      const bookingResult = await bookRide(pickupStop.lat, pickupStop.lon, dropoffStop.lat, dropoffStop.lon);
       socket.emit("UserBooked", {
+        userId: user?.user?._id, 
         objectTravel,
         pickupStop,
         dropoffStop,
-        booking,
+        booking: bookingResult?.booking?._id,
+        bookingDetails:bookingResult
       });
+
 
       addMarker([pickupStop.lon, pickupStop.lat], "A", originMarkerRef);
       addMarker([dropoffStop.lon, dropoffStop.lat], "B", destinationMarkerRef);   
       await drawRouteOnMap(pickupStop, dropoffStop, mapRef);
-    } catch (error) {
+      setSelectedOrigin("")
+      setSelectedDestination("")
+    } catch (error: any) {
       console.log(error);
-      toast.error(error.response.data.msg || "Error booking ride");
+      toast.error(error?.response?.data?.msg || "Error booking ride");
     }
   };
 
@@ -106,66 +110,48 @@ function BookRide() {
     return () => mapRef.current?.remove();
   }, []);
 
-  //   useEffect(() => {
-  //   if (!("geolocation" in window.navigator)) {
-  //     console.error("Geolocation not supported");
-  //     return;
-  //   }
+  useEffect(() => {
+    function handleCancel(data) {
+      console.log("ride cancelled by user", data);
+      setRideCancelled(true);
+    }
 
-  //   const watchId = window.navigator.geolocation.watchPosition(
-  //     (position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       console.log("Driver location:", latitude, longitude);
-  //       socket.emit("driverLocation", { latitude, longitude });
-  //     },
-  //     (err) => console.error(err),
-  //     { enableHighAccuracy: true }
-  //   );
+    socket.on("rideCancelledByUser", handleCancel);
+    return () => {
+      socket.off("rideCancelledByUser", handleCancel);
+    };
+  }, []);
 
-  //   return () => navigator.geolocation.clearWatch(watchId);
-  // }, []);
 
-  useEffect(() => {    
-  if (!user?.user?._doc || !user?.user?._doc.isVerified) return;
-
-  const handleConnect = () => {
-    console.log("Socket connected:", socket.id);
-    socket.emit("registerDriver", user.user._doc);
-  };
-
-  const handleBroadcast = (data: any) => {
-    console.log("Ride request received:", data);
-    console.log("User socket ID:", data.userSocketId);
-
-    const id = data.booking.id || data.booking;
-
-    setBookingId(id);
-    setBroadcastData(data);
-    setShowNotification(true);
-  };
-
-  socket.on("connect", handleConnect);
-  socket.on("broadcastToVerifiedDrivers", handleBroadcast);
-
-  return () => {
-    socket.off("connect", handleConnect);
-    socket.off("broadcastToVerifiedDrivers", handleBroadcast);
-  };
-
-}, []); 
-
-  
   return (
     <div className="py-5 z-1">
      <SideBar/>
-
-      <div className="md:flex md:px-20 px-5  m-2 md:space-x-8 mt-10">
+      <div className="md:flex md:px-20 px-5  m-2 md:space-x-8 mt-10">  
+        {/* FOR USERS to the the driverInfo on the frontend       */}
         {
-          driveBooked ? (
-            <RideRequested />
-          ) : broadcastData ? (
-            <Driverinfo />
-          ) : (
+          rideAcceptedBroadcastData && <Driverinfo id={bookingId}/> 
+        }
+
+        {/* FOR DRIVERS TO SEE THE RIDE INFO THE ACCEPTED */}
+        {acceptedRideBolean  && <Driverinfo id={bookingId}/> }
+
+        {/* FOR USERS TO SEE AFTER THEY BOOKED RIDE */}
+        {
+          rideBookedBoolean && !rideAcceptedBroadcastData && <RideRequested id={bookingId}/>
+        }
+
+        {/* FOR DRIVERS TO SEE ON LAND ON THE PAGE */}
+        {
+          user?.user?.role === "driver" && !acceptedRideBolean &&
+            <div className="md:w-1/3 h-fit border-2 border-gray-100 rounded-xl p-4 shadow-xs text-center text-2xl">
+              waiting for ride requests
+            </div>
+        }
+
+
+        {/* FOR USERS TO SEE ON LAND ON THE PAGE */}
+        {
+          user?.user?.role !== "driver" && !rideBookedBoolean ?
             <BookRideComponent
               selectedOrigin={selectedOrigin}
               setSelectedOrigin={setSelectedOrigin}
@@ -173,15 +159,29 @@ function BookRide() {
               setSelectedDestination={setSelectedDestination}
               calculateRoute={handleBooking}
             />
-          )
+            :
+            ''
         }
+
           <Notification
             open={showNotification}
-            onClose={() => setShowNotification(false)}
+            onClose={() => hideNotification()}
             message="You have a new ride request!"
             onRedirect={`requests/${bookingId}`}
             duration={60000} // auto-close after 1 minute
           />
+
+          <Notification
+            open={rideCancelled}
+            onClose={() => {
+              setRideCancelled(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride cancelled by passenger!"
+            duration={60000}
+        />
+
         <div
           ref={mapContainerRef}
           className="w-full h-[500px] rounded-xl"

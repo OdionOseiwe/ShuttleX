@@ -67,6 +67,7 @@ export const signUp = async (req, res) => {
         capacity,
         status: "pending",
         isVerified:false,
+        mobileNumber,
       });
       globalDriver = driver;
       await driver.save();

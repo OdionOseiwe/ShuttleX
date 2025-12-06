@@ -1,23 +1,29 @@
 import { MapPin,WalletMinimal,ArrowRight } from "lucide-react"
 import { useBookStore } from "../store/useBooking"
+import { useBroadcastStore } from "../store/useBroadcastStore";
+import {motion} from 'framer-motion'
+import { toast } from "react-toastify";
 
-function RideRequested() {
-    const {cancelRide} = useBookStore()
+function RideRequested({id}:{id:any}) {
+      const { cancelRide, resetRideState } = useBookStore();
+      const { resetBroadcast } = useBroadcastStore();
 
-    const id = localStorage.getItem('id');
-    const clean = id.replace(/"/g, '');
-    
-    const cancel = async()=>{
+    const cancelRideByPassenger = async()=>{
       try {
-        await cancelRide(clean);
-        localStorage.clear();
+        await cancelRide(id); 
+        resetRideState();
+      resetBroadcast();
+      toast.success("Ride cancelled")
       } catch (error) {
         console.log(error);
+        toast.error(error.response.data.msg || "Error occured while cancelling ride"); 
       }
     }
   
   return (
-    <div className="md:w-1/3 h-fit border-2 border-gray-100 rounded-xl p-4 shadow-xs">
+    <motion.div 
+      initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x:0, transition:{duration:1.0} }}
+    className="md:w-1/3 h-fit border-2 border-gray-100 rounded-xl p-4 shadow-xs">
       <div>
         <h1 className="font-bold text-xl text-center">Ride Requested</h1>
         <p className="font-light  text-center">Finding drivers nearby...</p>
@@ -44,8 +50,8 @@ function RideRequested() {
         </div>
         <p className="flex mt-5"> <WalletMinimal/> <span className="mx-3 font-semibold ">Cash</span></p>
       </div>
-      <button onClick={cancel} className="w-full bg-gray-100 hover:bg-gray-200 text-center py-3 px-6 rounded-xl mt-5 text-red-500 font-semibold">Cancel ride</button >
-    </div>
+      <button onClick={cancelRideByPassenger} className="w-full bg-gray-100 hover:bg-gray-200 text-center py-3 px-6 rounded-xl mt-5 text-red-500 font-semibold">Cancel ride</button >
+    </motion.div>
   )
 }
 

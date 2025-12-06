@@ -6,6 +6,7 @@ const driverSchema = new mongoose.Schema({
   vehicleType: { type: String, required: true },
   vehicleNumber: { type: String, required: true },
   capacity: { type: Number, required: true },
+  mobileNumber:{type:Number },
   status: { 
     type: String, 
     enum: ["pending","rejected", "approved","available", "unavailable", "on-trip"], 

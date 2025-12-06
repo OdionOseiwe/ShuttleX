@@ -1,30 +1,39 @@
 import { MapPin, ArrowRight, WalletMinimal, Timer } from "lucide-react";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
-import {useBookStore} from '../store/useBooking'
-import { useParams } from "react-router-dom";
 import { ekpomaStops } from '../utils/MockAddress';
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../store/socket";
-import  {useBroadcastStore} from '../store/useBroadcastStore'
-
+import { useBroadcastStore } from "../store/useBroadcastStore";
+import { useBookStore } from "../store/useBooking";
+import { useAuthStore } from "../store/UserAuth";
 
 // broadcast
 function DriverRideRequest({}) {
-    const broadcastData = useBroadcastStore((s:any) => s.broadcastData);
-  const { acceptRide, isLoading } = useBookStore();
+  const rideBookedbroadcastData = useBroadcastStore((s) => s.rideBookedbroadcastData);
+  const { acceptRide} = useBookStore(); 
+  const {user} = useAuthStore()
+
   const navigate = useNavigate();
-console.log(broadcastData);
 
-  if (!broadcastData) return null; // wait until broadcast arrives
-
-  const pickUpStop = ekpomaStops.find((stop) => stop.lon === broadcastData.pickupStop.lon);
-  const dropOffStop = ekpomaStops.find((stop) => stop.lon === broadcastData.dropoffStop.lon);
+  if (!rideBookedbroadcastData) return <div className="p-6">Waiting for ride data...</div>;
+  
+  const pickUpStop = ekpomaStops.find((stop) => stop.lon === rideBookedbroadcastData.pickupStop.lon);
+  const dropOffStop = ekpomaStops.find((stop) => stop.lon === rideBookedbroadcastData.dropoffStop.lon);
 
   const acceptRideByDriver = async () => {
     try {
-      await acceptRide(broadcastData.booking.id);
+      const response = await acceptRide(rideBookedbroadcastData.booking);
+      console.log(rideBookedbroadcastData);
+      
+      socket.emit("rideAccept", {
+        userId: rideBookedbroadcastData.userId,
+        bookingDetails: rideBookedbroadcastData,
+        driver: response,
+        driverId: user?.user?._id,
+
+      });
+
       toast.success("Ride accepted");
       navigate('/book-ride');
     } catch (error) {
@@ -80,7 +89,8 @@ console.log(broadcastData);
         onClick={acceptRideByDriver}
         className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl mt-6 font-bold transition"
       >
-        {isLoading ? "Accepting ride": "Accept ride"}
+        {/* {isLoading ? "Accepting ride": "Accept ride"} */} 
+        Accept ride
       </button>
     </div>
   );

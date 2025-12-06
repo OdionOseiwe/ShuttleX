@@ -1,16 +1,42 @@
 import { socket } from "../store/socket";
 import { useBroadcastStore } from "../store/useBroadcastStore";
+import { useBookStore } from "../store/useBooking";
 
-export function initDriverListener(user) {
-  if (!user?.user?._doc?.isVerified) return;
+export function initGlobalSocketListeners(user: any) {
+  const { setRideBookedBroadcastData,setRideAcceptedBroadcastData } = useBroadcastStore.getState();
+  const {  triggerNotification } = useBookStore.getState();
 
-  const { setBroadcastData } = useBroadcastStore.getState() as any
-
-  // Avoid multiple listeners
+  socket.off("connect");
   socket.off("broadcastToVerifiedDrivers");
+  socket.off("bookingAccepted");
 
-  socket.on("broadcastToVerifiedDrivers", (data) => {
-    console.log("🔥 GLOBAL BROADCAST TO DRIVER:", data);
-    setBroadcastData(data);  // <-- Works everywhere
+  socket.on("connect", () => {
+    console.log("Socket connected:", socket.id);
   });
+
+  // broadcast data only available to drivers
+  socket.on("broadcastToVerifiedDrivers", (data: any) => {
+    console.log("DRIVER RECEIVED BOOKING:", data);
+    const booking = data.booking ?? null;
+    triggerNotification(booking);
+    setRideBookedBroadcastData(data);
+  });
+
+  // booking data only available to students or users 
+  socket.on("bookingAccepted", (data: any) => {
+    console.log("BOOKING ACCEPTED:", data);
+    setRideAcceptedBroadcastData(data);
+  });
+
+  socket.on("rideRejectedByDriver", (data:any)=>{
+    console.log("ride rejected by driver", data);
+    
+  })
+
+  socket.on("rideCompleted", (data:any)=>{
+    console.log("ride completed by driver", data);
+    
+  })
+  
+
 }

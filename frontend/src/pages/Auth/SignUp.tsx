@@ -126,6 +126,7 @@ const SignupPage: React.FC = () => {
               name="mobile_number"
               value={formData.mobile_number}
               onChange={handleChange}
+              placeholder="+234 9087"
               // required
               className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />

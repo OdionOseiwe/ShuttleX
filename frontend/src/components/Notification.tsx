@@ -39,11 +39,10 @@ const Notification: FC<NotificationProps> = ({
           ×
         </button>
       </div>
-        <a href={onRedirect}
-          className="mt-2 px-3 py-1 text-center bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
-                  >
+        <a className="mt-2  px-3 py-1 text-center bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700" onClick={onClose} href={onRedirect}>
           Go
         </a >
+       
     </div>
   );
 };

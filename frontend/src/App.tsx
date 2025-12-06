@@ -11,9 +11,10 @@ import {Loader} from 'lucide-react'
 import { ToastContainer } from 'react-toastify';
 import HistoryPage from "./pages/student/History";
 import UpdateProfile from "./pages/student/Update_Profile";
-import { initDriverListener } from "./store/driverListener";
+import { initGlobalSocketListeners } from "./store/driverListener";
 import DriverRideRequest from './components/DriverRideRequest'
 import NotificationDetails from './components/Notification_detail'
+import { socket } from "./store/socket";
 
 const ProtectedRoutes = ({children}: { children: any })=>{
   const { isAuthenticated } = useAuthStore();
@@ -25,12 +26,32 @@ const ProtectedRoutes = ({children}: { children: any })=>{
 }
 
 function App() {
-  const {checkAuth, isCheckingAuth, user} = useAuthStore();
-    
+  const {checkAuth, isCheckingAuth,user} = useAuthStore();
+console.log(user);
+
+
+      
   useEffect(()=>{
     checkAuth()
-    initDriverListener(user);
   },[checkAuth])
+
+  useEffect(() => {
+    if (user) initGlobalSocketListeners(user); 
+  }, [user]);
+
+  useEffect(() => {
+      socket.emit("registerUser", { _id: user?.user?._id });
+      if (!user?.user?._doc) return;
+      const isVerified = user?.user?._doc?.isVerified;
+      const userId = user?.user?._id;
+  
+      if (isVerified) {
+        socket.emit("registerDriver", {
+          _id: userId,
+          isVerified: true
+        });
+      }
+  }, [user]);
 
    if (isCheckingAuth) {
     return (

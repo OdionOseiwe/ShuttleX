@@ -9,6 +9,7 @@ import { ConnectMongoDB } from './config/db.js';
 import bookingRoutes from'./routes/bookings.routes.js'
 import userRoutes from './routes/user.routes.js'
 import dotenv from 'dotenv'
+import { log } from 'node:console';
 dotenv.config()
 
 const app = express();
@@ -41,42 +42,96 @@ app.use(express.json());
 app.use('/TriRide/api/user', userRoutes)
 app.use('/TriRide/api/booking', bookingRoutes)
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on("driverLocation", (data) => {
-    console.log(" Driver Location:", data);
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
 
-    // EMIT: broadcast to all connected students
-    // So students can see live driver positions on their map
-    io.emit("updateDriverLocation", data);
+  socket.on("registerUser", (user) => {
+    if (!user?._id) return;
+
+    const userId = user._id.toString();
+    socket.join(userId);
+    console.log(`User ${userId} joined room: ${userId}`);
+    console.log("Rooms after registerUser:", io.sockets.adapter.rooms);
   });
 
   socket.on("registerDriver", (driver) => {
-    if (driver.isVerified) {
+    if (!driver?._id) return;
+
+    const driverId = driver._id.toString();
+    socket.join(driverId);
+
+    if (driver.isVerified === true) {
       socket.join("verifiedDrivers");
-      console.log("Driver joined verified room:", socket.id);
+      console.log(`Verified driver joined verifiedDrivers: ${driverId}`);
     }
   });
 
-  socket.on("rideAccept", (data) => {
-    const { userSocketId, bookingId } = data;
+  socket.on("UserBooked", (data) => {
+    console.log("User booked a ride:", data);
 
-    console.log("Driver accepted ride:", bookingId);
+    const userId = data.userId;
+    data.userId = userId;
 
-    // notify ONLY the user who booked
-    io.to(userSocketId).emit("rideAccepted", {
-        bookingId,
-        driverId: socket.id   // the driver socket id
- 
-    });
+    io.to("verifiedDrivers").emit("broadcastToVerifiedDrivers", data);
+    console.log("Broadcasted to all verified drivers");
   });
 
-  socket.on("UserBooked", (data)=>{
-    console.log("user location", data);
-    data.userSocketId = socket.id; 
-    io.to("verifiedDrivers").emit("broadcastToVerifiedDrivers", data);
-  })
+  socket.on("rideAccept", (data) => {
+    console.log("Driver accepted ride:", data);
+
+    const { userId } = data;
+
+    io.to(userId).emit("bookingAccepted", data);
+    console.log(`Sent bookingAccepted to user room: ${userId}`);
+  });
+
+  socket.on("driverRejectedRide", (data) => {
+    console.log("Driver rejected ride:", data);
+
+    const { userId, driverId } = data;
+    if (!userId) return;
+
+    // Notify the User
+    io.to(userId).emit("rideRejectedByDriver", {
+      status: "rejected",
+      driverId,
+      ...data,
+    });
+
+    console.log(`Notified user (${userId}) ride was rejected by driver`);
+  });
+
+  socket.on("driverCompleteRide", (data) => {
+    console.log("Driver completed ride:", data);
+
+    const { userId, driverId } = data;
+    if (!userId) return;
+
+    io.to(userId).emit("rideCompleted", {
+      status: "completed",
+      driverId,
+      ...data,
+    });
+
+    console.log(`Notified user (${userId}) ride is completed`);
+  });
+
+  socket.on("userCancelledRide", (data) => {
+    console.log("User cancelled ride:", data);
+
+    const { driverId, userId } = data;
+    if (!driverId) return;
+
+    io.to(driverId).emit("rideCancelledByUser", {
+      status: "cancelled",
+      userId,
+      ...data,
+    });
+
+    console.log(`Notified driver (${driverId}) that user cancelled the ride`);
+  });
 });
+
 
 // serving static files in production
 // So the express server can serve the react frontend

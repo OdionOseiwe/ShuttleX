@@ -9,11 +9,15 @@ const HOST_URL = "http://localhost:5000/TriRide/api";
 type DriverStore = {
   error: string | null;
   isLoading: boolean;
-  driveBooked: boolean;
   pickup: any;
   dropoff: any;
-  booking: any;
   acceptedRideBolean: boolean;
+  cancellRideBoolean:boolean,
+  rideBookedBoolean:boolean,
+  showNotification: boolean,
+  bookingId: null | any,
+  triggerNotification:(id:any) => void,
+  hideNotification:() => void,
   bookRide: (
     startLat: number,
     startLng: number,
@@ -23,6 +27,9 @@ type DriverStore = {
   cancelRide: (id: any) => Promise<void>;
   acceptRide: (id: any) => Promise<void>;
   getBooking: (id: any) => Promise<void>;
+  rejectRide: (id: any) => Promise<void>; 
+  completeRide: (id: any) => Promise<void>;
+  resetRideState:() => void
 };
 
 export const useBookStore = create<DriverStore>()(
@@ -30,14 +37,35 @@ export const useBookStore = create<DriverStore>()(
     (set) => ({
       error: null,
       isLoading: false,
-      driveBooked: false,
       pickup: null,
       dropoff: null,
-      booking: null,
       acceptedRideBolean: false,
+      showNotification: false,
+      bookingId: null,
+      cancellRideBoolean:false,
+      rideBookedBoolean:false,
+
+      triggerNotification: (id) => set({
+        showNotification: true,
+        bookingId: id
+      }),
+
+      hideNotification: () => set({
+        showNotification: false,
+        bookingId: null
+      }),
+
+      resetRideState: () =>
+        set({
+          bookingId: null,
+          acceptedRideBolean: false,
+          rideBookedBoolean: false,
+          pickup: null,
+          dropoff: null,
+        }),
 
       bookRide: async (startLat, startLng, destLat, destLng) => {
-        set({ error: null, isLoading: true });
+        set({ error: null, isLoading: true, rideBookedBoolean:false });
 
         try {
           const response = await axios.post(`${HOST_URL}/booking/bookings`, {
@@ -54,13 +82,12 @@ export const useBookStore = create<DriverStore>()(
 
           set({
             isLoading: false,
-            driveBooked: true,
             pickup: { lat: startLat, lon: startLng },
             dropoff: { lat: destLat, lon: destLng },
-          });
-          localStorage.setItem('id', JSON.stringify(response.data.msg.booking._id));
-          
-          return response.data.msg.booking._id;
+            bookingId: response.data.msg.booking._id,
+            rideBookedBoolean:true,
+          });          
+          return response.data.msg;
         } catch (error: any) {
           console.error("BOOKING ERROR:", error);
           set({
@@ -71,14 +98,15 @@ export const useBookStore = create<DriverStore>()(
       },
 
       cancelRide: async (id) => {
-        set({ error: null, isLoading: true });
+        set({ error: null, isLoading: true, cancellRideBoolean:false });
         try {
           await axios.patch(`${HOST_URL}/booking/bookings/${id}/cancel`);
           set({
             isLoading: false,
             pickup: null,
             dropoff: null,
-            driveBooked: false,
+            cancellRideBoolean:true,
+            rideBookedBoolean:false
           });
         } catch (error) {
           set({ error:error, isLoading:true});
@@ -87,13 +115,42 @@ export const useBookStore = create<DriverStore>()(
       },
 
       acceptRide: async (id) => {
-        set({ error: null, isLoading: true, acceptedRideBolean: false });
+        set({ error: null, isLoading: true, acceptedRideBolean: false , rideBookedBoolean:false});
         try {
-          await axios.patch(`${HOST_URL}/booking/bookings/${id}/accept`);
+          const rideDetails = await axios.patch(`${HOST_URL}/booking/bookings/${id}/accept`);
           set({
             isLoading: false,
             acceptedRideBolean: true,
-            driveBooked: false,
+            rideBookedBoolean:false,
+          });
+          return rideDetails.data;
+        } catch (error) {
+          set({ error:error, isLoading:true});
+          throw error
+        }
+      },
+      //By driver
+      rejectRide: async (id) => {
+        set({ error: null, isLoading: true });
+        try {
+          await axios.patch(`${HOST_URL}/booking/bookings/${id}/reject`);
+          set({
+            isLoading: false,
+            cancellRideBoolean:true,
+          });
+        } catch (error) {
+          set({ error:error, isLoading:true});
+          throw error
+        }
+      },
+
+      completeRide: async (id) => {
+        set({ error: null, isLoading: true });
+        try {
+          await axios.patch(`${HOST_URL}/booking/bookings/${id}/complete`);
+          set({
+            isLoading: false,
+            cancellRideBoolean:true,
           });
         } catch (error) {
           set({ error:error, isLoading:true});
@@ -102,7 +159,7 @@ export const useBookStore = create<DriverStore>()(
       },
 
       getBooking: async (id) => {
-        set({ error: null, isLoading: true, booking: null });
+        set({ error: null, isLoading: true,  });
         try {
           const response = await axios.get(
             `${HOST_URL}/booking/bookings/${id}`
@@ -111,7 +168,6 @@ export const useBookStore = create<DriverStore>()(
 
           set({
             isLoading: false,
-            booking: response.data.booking,
           });
         } catch (error) {
           set({ error:error, isLoading:true});
