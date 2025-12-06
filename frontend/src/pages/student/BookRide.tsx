@@ -69,6 +69,7 @@ function BookRide() {
         bookingDetails:bookingResult
       });
 
+      console.log("booking id",bookingResult?.booking?._id);
 
       addMarker([pickupStop.lon, pickupStop.lat], "A", originMarkerRef);
       addMarker([dropoffStop.lon, dropoffStop.lat], "B", destinationMarkerRef);   
@@ -80,20 +81,6 @@ function BookRide() {
       toast.error(error?.response?.data?.msg || "Error booking ride");
     }
   };
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (!bookRide) return;
-      // addMarker([pickup.lon, pickup.lat], "A", originMarkerRef);
-      // addMarker([dropoff.lon, dropoff.lat], "B", destinationMarkerRef);
-
-      drawRouteOnMap(
-        pickup,
-        dropoff,
-        mapRef
-      );
-    
-  }, [pickup, dropoff]);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;

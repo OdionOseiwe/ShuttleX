@@ -114,7 +114,7 @@ export const rejectBooking = async (req, res) => {
     const booking = await Booking.findById(id);
     if (!booking)
       return res.status(404).json({ success: false, msg: "Booking not found" });
-
+    console.log("booking id",id);
     const driver = await Driver.findById(booking.driverId);
     if (!driver)
       return res.status(404).json({ success: false, msg: "driver not found" });

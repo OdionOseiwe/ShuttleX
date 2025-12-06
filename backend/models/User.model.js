@@ -15,3 +15,23 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;
+
+
+  // <!-- //   useEffect(() => {
+  // //   if (!("geolocation" in window.navigator)) {
+  // //     console.error("Geolocation not supported");
+  // //     return;
+  // //   }
+
+  // //   const watchId = window.navigator.geolocation.watchPosition(
+  // //     (position) => {
+  // //       const { latitude, longitude } = position.coords;
+  // //       console.log("Driver location:", latitude, longitude);
+  // //       socket.emit("driverLocation", { latitude, longitude });
+  // //     },
+  // //     (err) => console.error(err),
+  // //     { enableHighAccuracy: true }
+  // //   );
+
+  // //   return () => navigator.geolocation.clearWatch(watchId);
+  // // }, []); -->

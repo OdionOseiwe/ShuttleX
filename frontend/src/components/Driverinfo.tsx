@@ -34,6 +34,7 @@ function Driverinfo({ id }: { id: any }) {
 
   const cancelRideByDriver = async () => {
     try {
+      console.log("ride to be rejected",rideData.id);
       await rejectRide(rideData.id);
       socket.emit("driverRejectedRide",{
         userId: rideBookedbroadcastData.userId,
@@ -51,6 +52,7 @@ function Driverinfo({ id }: { id: any }) {
 
   const completeRideByDriver = async () => {
     try {
+      console.log("ride to be completed",rideData.id);
       await completeRide(rideData.id);
       socket.emit("driverCompleteRide",{
         userId: rideBookedbroadcastData.userId,

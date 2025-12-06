@@ -24,7 +24,7 @@ function DriverRideRequest({}) {
   const acceptRideByDriver = async () => {
     try {
       const response = await acceptRide(rideBookedbroadcastData.booking);
-      console.log(rideBookedbroadcastData);
+      console.log("rideAccepted",rideBookedbroadcastData);
       
       socket.emit("rideAccept", {
         userId: rideBookedbroadcastData.userId,
