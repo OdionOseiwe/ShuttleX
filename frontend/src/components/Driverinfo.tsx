@@ -52,7 +52,10 @@ function Driverinfo({ id }: { id: any }) {
   const completeRideByDriver = async () => {
     try {
       await completeRide(rideData.id);
-
+      socket.emit("driverCompleteRide",{
+        userId: rideBookedbroadcastData.userId,
+        driverId: user?.user?._id
+      })
       // clean up functions for zustand
       resetRideState();
       resetBroadcast();

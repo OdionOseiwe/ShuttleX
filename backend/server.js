@@ -9,7 +9,6 @@ import { ConnectMongoDB } from './config/db.js';
 import bookingRoutes from'./routes/bookings.routes.js'
 import userRoutes from './routes/user.routes.js'
 import dotenv from 'dotenv'
-import { log } from 'node:console';
 dotenv.config()
 
 const app = express();

@@ -28,15 +28,4 @@ export function initGlobalSocketListeners(user: any) {
     setRideAcceptedBroadcastData(data);
   });
 
-  socket.on("rideRejectedByDriver", (data:any)=>{
-    console.log("ride rejected by driver", data);
-    
-  })
-
-  socket.on("rideCompleted", (data:any)=>{
-    console.log("ride completed by driver", data);
-    
-  })
-  
-
 }

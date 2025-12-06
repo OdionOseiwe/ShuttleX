@@ -35,7 +35,7 @@ function BookRide() {
   const dropoffStop = ekpomaStops.find((stop) => stop.address === selectedDestination);
 
   const {bookRide,pickup, dropoff,showNotification,hideNotification,bookingId,acceptedRideBolean,rideBookedBoolean,resetRideState} = useBookStore()
-  const { rideCancelled, setRideCancelled,rideAcceptedBroadcastData,resetBroadcast } = useBroadcastStore();
+  const { setRideCompleted, rideCompleted,rideCancelled, setRideCancelled,rideAcceptedBroadcastData,resetBroadcast,rideRejected,setRideRejected } = useBroadcastStore();
 
   const {user} = useAuthStore()
 
@@ -117,6 +117,17 @@ function BookRide() {
     }
 
     socket.on("rideCancelledByUser", handleCancel);
+
+    socket.on("rideRejectedByDriver", (data)=>{
+      console.log("ride rejected by driver", data);
+      setRideRejected(true)
+    })
+
+    socket.on("rideCompleted", (data)=>{
+      console.log("ride completed by driver", data);
+      setRideCompleted(true)
+    })
+
     return () => {
       socket.off("rideCancelledByUser", handleCancel);
     };
@@ -181,6 +192,28 @@ function BookRide() {
             message="Ride cancelled by passenger!"
             duration={60000}
         />
+
+          <Notification
+            open={rideRejected}
+            onClose={() => {
+              setRideRejected(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride cancelled by driver!"
+            duration={60000}
+          />
+
+          <Notification
+            open={rideCompleted}
+            onClose={() => {
+              setRideCompleted(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride completed!"
+            duration={60000}
+          />
 
         <div
           ref={mapContainerRef}

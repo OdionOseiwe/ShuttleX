@@ -3,22 +3,27 @@ import { useBookStore } from "../store/useBooking"
 import { useBroadcastStore } from "../store/useBroadcastStore";
 import {motion} from 'framer-motion'
 import { toast } from "react-toastify";
+import { ekpomaStops } from "../utils/MockAddress";
 
 function RideRequested({id}:{id:any}) {
-      const { cancelRide, resetRideState } = useBookStore();
+      const { cancelRide, resetRideState,pickup,dropoff } = useBookStore();
       const { resetBroadcast } = useBroadcastStore();
 
     const cancelRideByPassenger = async()=>{
       try {
         await cancelRide(id); 
         resetRideState();
-      resetBroadcast();
-      toast.success("Ride cancelled")
+        resetBroadcast();
+        toast.success("Ride cancelled")
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.msg || "Error occured while cancelling ride"); 
       }
     }
+
+      const pickUpStop = ekpomaStops.find((stop) => stop.lon === pickup.lon);
+      const dropOffStop = ekpomaStops.find((stop) => stop.lon === dropoff.lon);
+    
   
   return (
     <motion.div 
@@ -33,7 +38,7 @@ function RideRequested({id}:{id:any}) {
           <MapPin className="text-green-500" />
           <div>
             <p className="text-sm text-gray-600">Pickup</p>
-            <p className="font-semibold">{"AAU main gate"}</p>
+            <p className="font-semibold">{pickUpStop?.address}</p>
           </div>
         </div>
 
@@ -45,7 +50,7 @@ function RideRequested({id}:{id:any}) {
           <MapPin className="text-red-500" />
           <div>
             <p className="text-sm text-gray-600">Destination</p>
-            <p className="font-semibold">{"faculty of Physical science"}</p>
+            <p className="font-semibold">{dropOffStop?.address}</p>
           </div>
         </div>
         <p className="flex mt-5"> <WalletMinimal/> <span className="mx-3 font-semibold ">Cash</span></p>

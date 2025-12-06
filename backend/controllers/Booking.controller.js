@@ -107,12 +107,20 @@ export const acceptBooking = async (req, res) => {
 };
 
 // ✅ Reject booking (Driver)
+// TODO: Change driver status to availablle
 export const rejectBooking = async (req, res) => {
   try {
     const { id } = req.params;
     const booking = await Booking.findById(id);
     if (!booking)
       return res.status(404).json({ success: false, msg: "Booking not found" });
+
+    const driver = await Driver.findById(booking.driverId);
+    if (!driver)
+      return res.status(404).json({ success: false, msg: "driver not found" });
+
+    driver.status = "available";
+    await driver.save();
 
     booking.status = "rejected";
     await booking.save();
@@ -134,6 +142,7 @@ export const rejectBooking = async (req, res) => {
 };
 
 // ✅ Cancel ride (Student)
+// TODO: Change driver status to availablle
 export const cancelRide = async (req, res) => {
   try {
     const { id } = req.params;
@@ -145,6 +154,14 @@ export const cancelRide = async (req, res) => {
       return res
         .status(403)
         .json({ success: false, msg: "Not authorized to cancel this ride" });
+    }
+
+    if (booking.status === "confirmed") {
+      const driver = await Driver.findById(booking.driverId);
+      if (!driver)
+        return res.status(404).json({ success: false, msg: "driver not found" });
+      driver.status = "available";
+      await driver.save();
     }
 
     if (booking.status === "completed") {
