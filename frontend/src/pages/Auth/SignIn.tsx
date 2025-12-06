@@ -37,7 +37,7 @@ const Signin: React.FC = () => {
     try {
       await login(formData.email, formData.password)
       navigator('/book-ride')
-      toast.success(`Hello ${user?.user?.name}`)
+      toast.success(`Hello there`)
     } catch (error) {
       toast.error(error.response.data.msg || "Error occured while loging in"); 
             console.log(error);
