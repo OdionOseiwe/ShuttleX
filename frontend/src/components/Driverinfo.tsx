@@ -2,7 +2,6 @@ import { WalletMinimal, MapPin, ArrowRight } from "lucide-react";
 import { useAuthStore } from "../store/UserAuth";
 import { useBookStore } from "../store/useBooking";
 import { useBroadcastStore } from "../store/useBroadcastStore";
-import { useNavigate } from "react-router-dom";
 import { socket } from "../store/socket";
 import {motion} from 'framer-motion'
 import { toast } from "react-toastify";
@@ -11,8 +10,6 @@ function Driverinfo({ id }: { id: any }) {
   const { cancelRide, rejectRide,completeRide,resetRideState } = useBookStore();
   const { rideBookedbroadcastData, rideAcceptedBroadcastData,resetBroadcast } = useBroadcastStore();
   const { user } = useAuthStore();
-
-  const navigate = useNavigate();
 
   const role = user?.user?.role;
 
@@ -68,8 +65,6 @@ function Driverinfo({ id }: { id: any }) {
       toast.error(error.response.data.msg || "Error occured while completing ride"); 
     }
   };
-  console.log(rideBookedbroadcastData);
-  console.log(rideAcceptedBroadcastData);
 
   const cancelRideByPassenger = async () => {
     try {
@@ -137,7 +132,7 @@ function Driverinfo({ id }: { id: any }) {
         <span className="mx-3 font-semibold">Cash</span>
       </p>
 
-      {role === "student" && (
+      {user?.user?.role === "student" && (
         <button
           onClick={cancelRideByPassenger}
           className="w-full bg-gray-100 hover:bg-gray-200 text-center py-3 px-6 rounded-xl mt-5 text-red-500 font-semibold"
@@ -146,7 +141,7 @@ function Driverinfo({ id }: { id: any }) {
         </button>
       )}
 
-      {role === "driver" && (
+      {user?.user?.role === "driver" && (
         <>
           <button
             onClick={cancelRideByDriver}
