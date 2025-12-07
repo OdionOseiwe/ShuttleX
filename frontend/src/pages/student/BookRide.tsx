@@ -149,7 +149,7 @@ function BookRide() {
 
         {/* FOR USERS TO SEE ON LAND ON THE PAGE */}
         {
-          user?.user?.role !== "driver" && !rideBookedBoolean ?
+          user?.user?.role === "student" && !rideBookedBoolean &&
             <BookRideComponent
               selectedOrigin={selectedOrigin}
               setSelectedOrigin={setSelectedOrigin}
@@ -157,8 +157,6 @@ function BookRide() {
               setSelectedDestination={setSelectedDestination}
               calculateRoute={handleBooking}
             />
-            :
-            ''
         }
 
           <Notification

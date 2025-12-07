@@ -16,6 +16,15 @@ import DriverRideRequest from './components/DriverRideRequest'
 import NotificationDetails from './components/Notification_detail'
 import { socket } from "./store/socket";
 
+// on the deiver side the book ride page start show what is supposed 
+// to be in only the passenger or student side 
+// sometimes the socket does not alert the user about the accepted ride on time 
+// sometimes the socket does not alert at all
+// and after accepting ride that is where the problem is now
+// the driver can complete or cancel the ride again after refresh(it shows
+ // driver not found after refresh)
+// then before refreshing it showing what is supposed to be in only the passenger side
+// Maybe that is where is the problem is 
 const ProtectedRoutes = ({children}: { children: any })=>{
   const { isAuthenticated } = useAuthStore();
 
