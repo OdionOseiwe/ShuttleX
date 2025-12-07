@@ -26,31 +26,42 @@ import { socket } from "./store/socket";
 // then before refreshing it showing what is supposed to be in only the passenger side
 // Maybe that is where is the problem is 
 const ProtectedRoutes = ({children}: { children: any })=>{
-  const { isAuthenticated } = useAuthStore();
-
+  const { isAuthenticated,isCheckingAuth } = useAuthStore();
+  // if (isCheckingAuth) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <Loader size={50} className="animate-spin" />
+  //     </div>
+  //   );
+  // }
   if(!isAuthenticated){
     return <Navigate to= "/login" replace />;
   }
+
   return children
 }
 
 function App() {
   const {checkAuth, isCheckingAuth,user} = useAuthStore();
-console.log(user);
+  console.log(user);
 
-
-      
   useEffect(()=>{
     checkAuth()
   },[checkAuth])
 
   useEffect(() => {
+    if (!user) return;
+
     if (user) initGlobalSocketListeners(user); 
   }, [user]);
 
   useEffect(() => {
+      if (!user) return;
+
       socket.emit("registerUser", { _id: user?.user?._id });
+
       if (!user?.user?._doc) return;
+      
       const isVerified = user?.user?._doc?.isVerified;
       const userId = user?.user?._id;
   

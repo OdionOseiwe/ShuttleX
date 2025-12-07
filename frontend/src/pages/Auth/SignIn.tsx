@@ -36,8 +36,10 @@ const Signin: React.FC = () => {
     e.preventDefault();
     try {
       await login(formData.email, formData.password)
+      
       navigator('/book-ride')
       toast.success(`Hello there`)
+      
     } catch (error) {
       toast.error(error.response.data.msg || "Error occured while loging in"); 
             console.log(error);

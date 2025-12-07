@@ -120,7 +120,8 @@ function BookRide() {
     };
   }, []);
 
-
+  console.log(user);
+  
   return (
     <div className="py-5 z-1">
      <SideBar/>
