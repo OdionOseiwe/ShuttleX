@@ -97,33 +97,6 @@ function BookRide() {
     return () => mapRef.current?.remove();
   }, []);
 
-  useEffect(() => {
-    const handleCancel = (data) => {
-      console.log("ride cancelled by user", data);
-      setRideCancelled(true);
-    };
-  
-    const handleRejected = (data) => {
-      console.log("ride rejected by driver", data);
-      setRideRejected(true);
-    };
-  
-    const handleCompleted = (data) => {
-      console.log("ride completed by driver", data);
-      setRideCompleted(true);
-    };
-  
-    socket.on("rideCancelledByUser", handleCancel);
-    socket.on("rideRejectedByDriver", handleRejected);
-    socket.on("rideCompleted", handleCompleted);
-  
-    return () => {
-      socket.off("rideCancelledByUser", handleCancel);
-      socket.off("rideRejectedByDriver", handleRejected);
-      socket.off("rideCompleted", handleCompleted);
-    };
-  }, []);
-
   return (
     <div className="py-5 z-1">
      <SideBar/>
