@@ -11,7 +11,7 @@ function Driverinfo({ id }: { id: any }) {
   const { rideBookedbroadcastData, rideAcceptedBroadcastData,resetBroadcast } = useBroadcastStore();
   const { user } = useAuthStore();
 
-  const role = user?.user?.role;
+  const role = user?.user?.role; 
 
   const rideData =
     role === "student"

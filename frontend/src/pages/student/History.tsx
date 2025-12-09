@@ -1,7 +1,13 @@
 import SideBar from '../../layout/SideBar';
 import { Clock, History } from 'lucide-react';
+import Notification from '../../components/Notification';
+import {useBroadcastStore} from '../../store/useBroadcastStore'
+import {useBookStore} from '../../store/useBooking'
 
 function HistoryPage() {
+    const { setRideCompleted, rideCompleted,rideCancelled, setRideCancelled,resetBroadcast,rideRejected,setRideRejected } = useBroadcastStore();
+    const {showNotification,hideNotification,bookingId,resetRideState} = useBookStore()
+    
   return (
     <div className="py-5 z-1">
         <SideBar/>
@@ -32,6 +38,47 @@ function HistoryPage() {
             {/* {history.length === 0 && (
             <p className="text-center text-gray-500 mt-10 text-lg">No activity yet.</p>
             )} */}
+
+               <Notification
+            open={showNotification}
+            onClose={() => hideNotification()}
+            message="You have a new ride request!"
+            onRedirect={`requests/${bookingId}`}
+            duration={60000} // auto-close after 1 minute
+          />
+
+          <Notification
+            open={rideCancelled}
+            onClose={() => {
+              setRideCancelled(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride cancelled by passenger!"
+            duration={60000}
+        />
+
+          <Notification
+            open={rideRejected}
+            onClose={() => {
+              setRideRejected(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride cancelled by driver!"
+            duration={60000}
+          />
+
+          <Notification
+            open={rideCompleted}
+            onClose={() => {
+              setRideCompleted(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride completed!"
+            duration={60000}
+          />
         </div>
     </div>
   )

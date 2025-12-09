@@ -114,10 +114,6 @@ function BookRide() {
       console.log("ride completed by driver", data);
       setRideCompleted(true)
     })
-
-    return () => {
-      socket.off("rideCancelledByUser", handleCancel);
-    };
   }, []);
   
   return (

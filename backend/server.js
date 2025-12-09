@@ -15,10 +15,14 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*", // You can restrict this later to your frontend URL
+    origin: [
+      "http://localhost:5173",
+      "https://shuttlex-client-domain.com"
+    ],
     methods: ["GET", "POST"],
-  },
+  }
 });
+
 
 // Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -33,7 +37,13 @@ const __dirname = dirname(__filename);
 // so the browser will block the request from frontend to backend due to CORS policy
 // to avoid this we need to enable CORS on the backend and allow the frontend to access the backend
 // by setting origin to frontend url and credentials to true to allow cookies to be sent with the request
-app.use(cors({origin:"http://localhost:5173", credentials:true})) // So the frontend can access the backend with cookies 
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://shuttlex.onrender.com"
+  ],
+  credentials: true
+}));
 
 app.use(cookieParser())
 app.use(express.json());

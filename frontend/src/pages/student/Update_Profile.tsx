@@ -2,6 +2,9 @@ import SideBar from '../../layout/SideBar';
 import {useAuthStore} from '../../store/UserAuth'
 import { useState } from "react";
 import { motion} from 'framer-motion'
+import Notification from '../../components/Notification';
+import {useBroadcastStore} from '../../store/useBroadcastStore'
+import {useBookStore} from '../../store/useBooking'
 
 const fadeUp = {
   hidden: { opacity: 0},
@@ -13,6 +16,8 @@ const fadeUp = {
 };
 
 export default function UpdateProfile() {
+  const { setRideCompleted, rideCompleted,rideCancelled, setRideCancelled,resetBroadcast,rideRejected,setRideRejected } = useBroadcastStore();
+  const {showNotification,hideNotification,bookingId,resetRideState} = useBookStore()
   const [editing, setEditing] = useState(false);
   const {user} = useAuthStore();
   console.log(user);
@@ -86,6 +91,46 @@ export default function UpdateProfile() {
             </div>
           </div>
         </div>
+        <Notification
+            open={showNotification}
+            onClose={() => hideNotification()}
+            message="You have a new ride request!"
+            onRedirect={`requests/${bookingId}`}
+            duration={60000} // auto-close after 1 minute
+          />
+
+          <Notification
+            open={rideCancelled}
+            onClose={() => {
+              setRideCancelled(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride cancelled by passenger!"
+            duration={60000}
+        />
+
+          <Notification
+            open={rideRejected}
+            onClose={() => {
+              setRideRejected(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride cancelled by driver!"
+            duration={60000}
+          />
+
+          <Notification
+            open={rideCompleted}
+            onClose={() => {
+              setRideCompleted(false); 
+              resetRideState();
+              resetBroadcast();
+            }}
+            message="Ride completed!"
+            duration={60000}
+          />
       </motion.div>
   );
 }

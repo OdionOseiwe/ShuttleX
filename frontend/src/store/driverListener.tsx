@@ -28,4 +28,8 @@ export function initGlobalSocketListeners(user: any) {
     setRideAcceptedBroadcastData(data);
   });
 
+  socket.on("connect_error", (err) => {
+    console.log("Socket connect error →", err.message);
+  });
+
 }
