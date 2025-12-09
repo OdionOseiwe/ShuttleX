@@ -6,5 +6,6 @@ const URL =
     : "http://localhost:5000";
 
 export const socket = io(URL, {
-  transports: ["websocket"],
+  transports: ["websocket"], 
+  withCredentials: true,
 });

@@ -34,7 +34,7 @@ function BookRide() {
   const pickupStop = ekpomaStops.find((stop) => stop.address === selectedOrigin);
   const dropoffStop = ekpomaStops.find((stop) => stop.address === selectedDestination);
 
-  const {bookRide,pickup, dropoff,showNotification,hideNotification,bookingId,acceptedRideBolean,rideBookedBoolean,resetRideState} = useBookStore()
+  const {bookRide,showNotification,hideNotification,bookingId,acceptedRideBolean,rideBookedBoolean,resetRideState} = useBookStore()
   const { setRideCompleted, rideCompleted,rideCancelled, setRideCancelled,rideAcceptedBroadcastData,resetBroadcast,rideRejected,setRideRejected } = useBroadcastStore();
 
   const {user} = useAuthStore()
@@ -98,24 +98,32 @@ function BookRide() {
   }, []);
 
   useEffect(() => {
-    function handleCancel(data) {
+    const handleCancel = (data) => {
       console.log("ride cancelled by user", data);
       setRideCancelled(true);
-    }
-
-    socket.on("rideCancelledByUser", handleCancel);
-
-    socket.on("rideRejectedByDriver", (data)=>{
-      console.log("ride rejected by driver", data);
-      setRideRejected(true)
-    })
-
-    socket.on("rideCompleted", (data)=>{
-      console.log("ride completed by driver", data);
-      setRideCompleted(true)
-    })
-  }, []);
+    };
   
+    const handleRejected = (data) => {
+      console.log("ride rejected by driver", data);
+      setRideRejected(true);
+    };
+  
+    const handleCompleted = (data) => {
+      console.log("ride completed by driver", data);
+      setRideCompleted(true);
+    };
+  
+    socket.on("rideCancelledByUser", handleCancel);
+    socket.on("rideRejectedByDriver", handleRejected);
+    socket.on("rideCompleted", handleCompleted);
+  
+    return () => {
+      socket.off("rideCancelledByUser", handleCancel);
+      socket.off("rideRejectedByDriver", handleRejected);
+      socket.off("rideCompleted", handleCompleted);
+    };
+  }, []);
+
   return (
     <div className="py-5 z-1">
      <SideBar/>
