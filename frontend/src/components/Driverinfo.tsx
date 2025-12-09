@@ -84,6 +84,7 @@ function Driverinfo({ id }: { id: any }) {
     
     }
   };
+  console.log(user);
 
   const whatsappLink = `https://wa.me/${rideData?.mobile ?? ""}`;
 
