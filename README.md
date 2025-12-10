@@ -44,16 +44,58 @@ Built using **React + TypeScript**, **Node.js**, **Express**, **MongoDB**, and *
 - TailwindCSS
 - Socket.IO Client
 - React Router
-- Google Maps API
+- Mapbox API
 
 ### Backend
 - Node.js + Express
 - MongoDB + Mongoose
 - Socket.IO Server
 - JWT Authentication
-- Cloudinary (optional for profile images)
 
----
+## Getting Started
 
-## 📁 Project Structure (Frontend)
+### Installation
 
+```bash
+# Clone the repository
+git clone https://github.com/OdionOseiwe/ShuttleX.git
+
+# Navigate into the project
+cd ShuttleX
+
+# Install backend dependencies
+npm install
+
+# Navigate to the frontend
+cd frontend
+
+# Install frontend dependencies
+npm install
+
+```
+
+enter your keys in the env file for frontend and backend
+```bash
+MONGOURL = mongodb+srv://urle_xample
+PORT = 9000
+JWT_SECRET = seceretToken
+NODE_ENV = development | production
+```
+```bash
+VITE_BACKEND_URL=TriRide/api
+VITE_BACKEND_URL_SOCKET="https://shuttlex.onrender.com"
+```
+
+### Usage
+
+Backend
+```bash
+npm run dev
+```
+
+frontend
+```bash
+npm run dev
+Copy code
+
+```
