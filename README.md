@@ -96,6 +96,4 @@ npm run dev
 frontend
 ```bash
 npm run dev
-Copy code
-
 ```
