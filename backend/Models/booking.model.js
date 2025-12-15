@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const bookingSchema =new mongoose.Schema({
   studentId: { type: mongoose.Schema.Types.ObjectId, ref: "User",  },
   driverId: { type: mongoose.Schema.Types.ObjectId, ref: "Driver", },
