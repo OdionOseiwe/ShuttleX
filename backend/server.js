@@ -156,7 +156,7 @@ if (process.env.NODE_ENV === "production") {
 
   //  for other routes that are not from the Api endpoints like dashboard, home, developer e.t.c
   app.use((req, res, next) => {
-    if (req.path.startsWith("/simupay/api")) return next();
+    if (req.path.startsWith("/TriRide/api")) return next();
     res.sendFile(join(frontendBuildPath, "index.html"));
   });
 

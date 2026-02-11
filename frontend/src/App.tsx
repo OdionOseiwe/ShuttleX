@@ -16,9 +16,6 @@ import DriverRideRequest from './components/DriverRideRequest'
 import NotificationDetails from './components/Notification_detail'
 import { socket } from "./store/socket";
 
-// the last problem after accepting ride, on the driver side the the Driver info 
-// dont load the buttons for reject and complete ride, but when i reload the age it shows 
-// but it driver not found as error
 const ProtectedRoutes = ({children}: { children: any })=>{
   const { isAuthenticated } = useAuthStore();
 
@@ -68,27 +65,6 @@ function App() {
     );
   }
 
-/// MORE FEATURES
-// 1. Book a ride on behalf of someone
-// 2. schedule a ride (like for tomorrow)
-// 3. based on feedbacks from passagers reward Drivers with NFT
-
-/// FOR BACKEND
-// for history query rides based on user id and for driver rides completed by driver
-// Admin manage users and drivers
-// now the admin function for drivers is to approve them before they start receiving ride rquests
-
-// TODO: Now that the map is working with mockAddress, and the routes are being drawn
-// NEXT: Integrate with backend 
-// 1. sign in users and drivers 
-   // - toaster messages for success and errors
-// 3. Do the notifications systems with backend for all users
-// 2. Do the admin dashboard for approving drivers
-// 4. Book a ride 
-// 5. Drivers see ride requests and accept them (socket.io integration)
-// 6. Real-time tracking of rides
-// 7. Load history of rides for users and drivers
-// 8. Update Profile settings
   return (
     <>
         <Routes>
@@ -97,14 +73,12 @@ function App() {
             <ProtectedRoutes>
               <BookRide/>
             </ProtectedRoutes>
+            // <BookRide/>
           } />
-          {/* <Route path="/" element={<Home />} />
-          {/* <Route path="/" element={<Home />} /> */}
-          {/* <Route path="/" element={<Home />} /> */}
+       
           
           <Route path="/notifications" element={
             <ProtectedRoutes>
-              {/* <NotificationList notifications = {[]} onDelete ={()=>{}}/> */}
               <Notifications/>
             </ProtectedRoutes>
           } /> 
@@ -112,12 +86,15 @@ function App() {
             <ProtectedRoutes>
               <HistoryPage/>
             </ProtectedRoutes>
+            // <HistoryPage/>
           } /> 
           <Route path="/update-profile" element={
             <ProtectedRoutes>
               <UpdateProfile/>
             </ProtectedRoutes>
+            // <UpdateProfile/>
           } /> 
+
           <Route path= '/signup' element= {<SignupPage/>}/>
           <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
           <Route path= '/login' element= {<Signin/>}/>

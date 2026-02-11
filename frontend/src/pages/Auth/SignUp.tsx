@@ -63,6 +63,7 @@ const SignupPage: React.FC = () => {
     e.preventDefault();
     const validationErrors = validate();
     try {
+      console.log('loading submit...');
       if (Object.keys(validationErrors).length === 0) {
       await signUp(
         formData.email,
@@ -75,13 +76,18 @@ const SignupPage: React.FC = () => {
         "",
         0
       )
+            console.log('loading submitted...');
       navigator('/login')
       toast.success(`Sign Up successful`)
     }
     } catch (error) {
+      console.log('loading...');
+      console.log(error);
+      
       setErrors(validationErrors);
       toast.error(error.response.data.msg || "Error signing uo");
       console.log(error);
+      console.log('loading finished...');
     } 
   };
 
