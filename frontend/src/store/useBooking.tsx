@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
-// const HOST_URL = "http://localhost:7000/TriRide/api";
-const HOST_URL = import.meta.env.VITE_BACKEND_URL ;
+const HOST_URL = "http://localhost:7000/TriRide/api";
+// const HOST_URL = import.meta.env.VITE_BACKEND_URL ;
 
 type DriverStore = {
   error: string | null;
