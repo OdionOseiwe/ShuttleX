@@ -27,11 +27,10 @@ const ProtectedRoutes = ({children}: { children: any })=>{
 }
 
 function App() {
-  const {checkAuth, isCheckingAuth,user,isAuthenticated} = useAuthStore();
+  const {checkAuth, isCheckingAuth,user} = useAuthStore();
 
   useEffect(()=>{
     checkAuth()
-    console.log(isAuthenticated, user);
   },[checkAuth])
 
   useEffect(() => {
