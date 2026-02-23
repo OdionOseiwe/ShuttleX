@@ -71,10 +71,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/book-ride" element={
-            <ProtectedRoutes>
-              <BookRide/>
-            </ProtectedRoutes>
-            // <BookRide/>
+            // <ProtectedRoutes>
+            //   <BookRide/>
+            // </ProtectedRoutes>
+            <BookRide/>
           } />
        
           
