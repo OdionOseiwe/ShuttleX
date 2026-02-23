@@ -31,6 +31,7 @@ function App() {
 
   useEffect(()=>{
     checkAuth()
+    console.log(isCheckingAuth, user);
   },[checkAuth])
 
   useEffect(() => {
