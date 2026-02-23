@@ -41,7 +41,7 @@ const SignupPage: React.FC = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const navigator = useNavigate();
-  const {signUp,error} = useAuthStore();
+  const {signUp,error, isLoading} = useAuthStore();
 
   const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -172,7 +172,7 @@ const SignupPage: React.FC = () => {
             type="submit"
             className="cursor-pointer w-full bg-black text-white py-2 rounded-md hover:bg-black/80 transition-colors"
           >
-            Sign Up
+            {isLoading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
 
