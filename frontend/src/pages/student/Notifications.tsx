@@ -37,7 +37,7 @@ function Notifications() {
             onClose={() => hideNotification()}
             message="You have a new ride request!"
             onRedirect={`requests/${bookingId}`}
-            duration={60000} // auto-close after 1 minute
+            duration={6000000} // auto-close after 1 minute
           />
 
           <Notification
@@ -48,7 +48,7 @@ function Notifications() {
               resetBroadcast();
             }}
             message="Ride cancelled by passenger!"
-            duration={60000}
+            duration={6000000}
         />
 
           <Notification
@@ -59,7 +59,7 @@ function Notifications() {
               resetBroadcast();
             }}
             message="Ride cancelled by driver!"
-            duration={60000}
+            duration={6000000}
           />
 
           <Notification
@@ -70,7 +70,7 @@ function Notifications() {
               resetBroadcast();
             }}
             message="Ride completed!"
-            duration={60000}
+            duration={6000000}
           />
     </div>
   );

@@ -17,7 +17,7 @@ const io = new Server(server, {
   cors: {
     origin: [
       "http://localhost:5173",
-      "https://shuttlex-client-domain.com"
+      "https://shuttlex.onrender.com"
     ],
     methods: ["GET", "POST"],
   }

@@ -32,11 +32,15 @@ function Driverinfo({ id }: { id: any }) {
   const cancelRideByDriver = async () => {
     try {
       console.log("ride to be rejected",rideData.id);
-      await rejectRide(rideData.id);
-      socket.emit("driverRejectedRide",{
-        userId: rideBookedbroadcastData.userId,
-        driverId: user?.user?._id
-      })
+      if (rideData.id) {
+        await rejectRide(rideData.id);
+        socket.emit("driverRejectedRide",{
+          userId: rideBookedbroadcastData.userId,
+          driverId: user?.user?._id
+        })
+      }
+      localStorage.clear();
+      
       // clean up functions for zustand
       resetRideState();
       resetBroadcast();
@@ -50,11 +54,16 @@ function Driverinfo({ id }: { id: any }) {
   const completeRideByDriver = async () => {
     try {
       console.log("ride to be completed",rideData.id);
-      await completeRide(rideData.id);
-      socket.emit("driverCompleteRide",{
-        userId: rideBookedbroadcastData.userId,
-        driverId: user?.user?._id
-      })
+      if(rideData.id){
+         await completeRide(rideData.id);
+        socket.emit("driverCompleteRide",{
+          userId: rideBookedbroadcastData.userId,
+          driverId: user?.user?._id
+        })
+      }
+
+      localStorage.clear();
+     
       // clean up functions for zustand
       resetRideState();
       resetBroadcast();
@@ -68,12 +77,14 @@ function Driverinfo({ id }: { id: any }) {
 
   const cancelRideByPassenger = async () => {
     try {
-      await cancelRide(id);
-      socket.emit("userCancelledRide",{
-        userId: user?.user?._id,
-        driverId: rideAcceptedBroadcastData.driverId
-      })
-
+      if (id) {
+        await cancelRide(id);
+        socket.emit("userCancelledRide",{
+          userId: user?.user?._id,
+          driverId: rideAcceptedBroadcastData.driverId
+        })
+      }
+      localStorage.clear();
       // clean up functions for zustand
       resetRideState();
       resetBroadcast();

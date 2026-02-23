@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
-// const HOST_URL = "http://localhost:7000/TriRide/api";
-const HOST_URL = import.meta.env.VITE_BACKEND_URL ;
+const HOST_URL = "http://localhost:7000/TriRide/api";
+// const HOST_URL = import.meta.env.VITE_BACKEND_URL ;
 
 type DriverStore = {
   error: string | null;
@@ -100,14 +100,18 @@ export const useBookStore = create<DriverStore>()(
       cancelRide: async (id) => {
         set({ error: null, isLoading: true, cancellRideBoolean:false });
         try {
-          await axios.patch(`${HOST_URL}/booking/bookings/${id}/cancel`);
-          set({
-            isLoading: false,
-            pickup: null,
-            dropoff: null,
-            cancellRideBoolean:true,
-            rideBookedBoolean:false
-          });
+          if (id) {
+             await axios.patch(`${HOST_URL}/booking/bookings/${id}/cancel`);
+            set({
+              isLoading: false,
+              pickup: null,
+              dropoff: null,
+              cancellRideBoolean:true,
+              rideBookedBoolean:false
+            });
+          }
+          useBookStore.persist.clearStorage();
+         
         } catch (error) {
           set({ error:error, isLoading:true});
           throw error
@@ -133,11 +137,15 @@ export const useBookStore = create<DriverStore>()(
       rejectRide: async (id) => {
         set({ error: null, isLoading: true });
         try {
-          await axios.patch(`${HOST_URL}/booking/bookings/${id}/reject`);
-          set({
-            isLoading: false,
-            cancellRideBoolean:true,
-          });
+          if (id) {
+              await axios.patch(`${HOST_URL}/booking/bookings/${id}/reject`);
+            set({
+              isLoading: false,
+              cancellRideBoolean:true,
+            });
+          }
+          useBookStore.persist.clearStorage();
+        
         } catch (error) {
           set({ error:error, isLoading:true});
           throw error
@@ -147,11 +155,15 @@ export const useBookStore = create<DriverStore>()(
       completeRide: async (id) => {
         set({ error: null, isLoading: true });
         try {
-          await axios.patch(`${HOST_URL}/booking/bookings/${id}/complete`);
-          set({
-            isLoading: false,
-            cancellRideBoolean:true,
-          });
+          if(id){
+            await axios.patch(`${HOST_URL}/booking/bookings/${id}/complete`);
+            set({
+              isLoading: false,
+              cancellRideBoolean:true,
+            });
+          }
+          useBookStore.persist.clearStorage();
+         
         } catch (error) {
           set({ error:error, isLoading:true});
           throw error
