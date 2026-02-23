@@ -170,7 +170,12 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(process.env.PORT, () => {
-    ConnectMongoDB();
-    console.log(`Example app listening on port ${process.env.PORT}`)
-})
+const startServer = async () => {
+  await ConnectMongoDB();
+
+  server.listen(process.env.PORT, () => {
+    console.log(`Example app listening on port ${process.env.PORT}`);
+  });
+};
+
+startServer();
