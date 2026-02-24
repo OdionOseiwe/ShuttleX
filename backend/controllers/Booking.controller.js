@@ -164,12 +164,6 @@ export const cancelRide = async (req, res) => {
       await driver.save();
     }
 
-    if (booking.status === "completed") {
-      return res
-        .status(400)
-        .json({ success: false, msg: "Cannot cancel a completed ride" });
-    }
-
     booking.status = "cancelled";
     await booking.save();
 
