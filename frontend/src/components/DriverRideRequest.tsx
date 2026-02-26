@@ -80,7 +80,7 @@ function DriverRideRequest({}) {
 
         <div className="flex items-center gap-3">
           <WalletMinimal />
-          <p className="font-medium">₦{600}</p>
+          <p className="font-medium">₦{150}</p>
         </div>
 
       </motion.div>
