@@ -73,22 +73,27 @@ io.on("connection", (socket) => {
   });
 
   socket.on("registerDriver", (driver) => {
+    console.log("Driver attempting to register:", driver);
+
     if (!driver?._id) return;
 
     const driverId = driver._id.toString();
     socket.join(driverId);
 
     if (driver.isVerified === true) {
-      socket.join("verifiedDrivers");
-      console.log("about to register driver...");
-      console.log("driver",driver)
-      //  Join vehicle-specific room
-      if (driver.vehicleType) {
-        const vehicleRoom = `vehicle_${driver.vehicleType}`;
-        socket.join(vehicleRoom);
-        console.log(`Driver ${driverId} joined ${vehicleRoom}`);
-      }
+    socket.join("verifiedDrivers");
+
+    console.log(`Verified driver joined verifiedDrivers: ${driverId}`);
+
+    if (driver.vehicleType) {
+      const vehicleRoom = `vehicle_${driver.vehicleType}`;
+      socket.join(vehicleRoom);
+
+      console.log(`Driver ${driverId} joined ${vehicleRoom}`);
     }
+    }
+
+   console.log("Current Rooms:", io.sockets.adapter.rooms);
   });
 
   socket.on("UserBooked", (data) => {
