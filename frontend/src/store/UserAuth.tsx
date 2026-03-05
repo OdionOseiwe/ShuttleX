@@ -43,6 +43,16 @@ type AuthStore = {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  updateDriverProfile:(
+    vehicleType:string, 
+    vehicleNumber:string, 
+    capacity:number,
+     mobileNumber :number
+  ) => Promise<void>;
+  updateUserProfile:(
+    mobileNumber:number
+  ) => Promise<void>;
+  
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -154,4 +164,49 @@ export const useAuthStore = create<AuthStore>((set) => ({
       });
     }
   },
+  
+  updateDriverProfile:async (
+     vehicleType, 
+    vehicleNumber, 
+    capacity,
+     mobileNumber
+  ) => {
+    set({ isLoading: true  });
+    try {
+      await axios.patch(`${HOST_URL}/user/driver/profile`, {
+        vehicleType, 
+        vehicleNumber, 
+        capacity,
+        mobileNumber
+      });
+
+      set({
+        isLoading: false
+      });
+    } catch (error) {
+      set({
+       isLoading:false
+      });
+    }
+  },
+
+  updateUserProfile:async (
+    mobileNumber
+  ) => {
+    set({ isLoading: true  });
+    try {
+      await axios.patch(`${HOST_URL}/user/profile`, {
+        mobileNumber
+      });
+
+      set({
+        isLoading: false
+      });
+    } catch (error) {
+      set({
+       isLoading:false
+      });
+    }
+  },
+
 }));

@@ -234,7 +234,27 @@ export const getPendingDrivers = async (req, res) => {
   }
 };
 
-// ✅ Update Driver/User Profile
+// ✅ Update User Profile
+export const updateUserProfile = async (req, res) => {
+  try {
+    const { mobileNumber } = req.body;
+    const user = await User.findById(req.userId);
+    if (mobileNumber) user.mobileNumber = mobileNumber;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      msg: { ...user._doc, password: undefined },
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Error occurred while updating profile" });
+  }
+};
+
+// ✅ Update Driver Profile
 export const updateDriversProfile = async (req, res) => {
   try {
     const { vehicleType, vehicleNumber, capacity, mobileNumber } = req.body;

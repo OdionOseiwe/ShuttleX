@@ -22,5 +22,4 @@ export const mockNINData = [
 ];
 
 export const verifyNIN = (nin, name) => mockNINData.find((item)=> item.nin === nin && item.name === name)
-console.log(verifyNIN("20202020202", "Sarah Lewis"))
 

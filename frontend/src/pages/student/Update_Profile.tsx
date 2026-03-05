@@ -5,6 +5,7 @@ import { motion} from 'framer-motion'
 import Notification from '../../components/Notification';
 import {useBroadcastStore} from '../../store/useBroadcastStore'
 import {useBookStore} from '../../store/useBooking'
+import { useNavigate } from "react-router-dom";
 
 const fadeUp = {
   hidden: { opacity: 0},
@@ -18,10 +19,34 @@ const fadeUp = {
 export default function UpdateProfile() {
   const { setRideCompleted, rideCompleted,rideCancelled, setRideCancelled,resetBroadcast,rideRejected,setRideRejected } = useBroadcastStore();
   const {showNotification,hideNotification,bookingId,resetRideState} = useBookStore()
+  const [vehicleType, setVehicleType] = useState("");
+  const [vehicleNumber, setVehicleNumber] = useState("");
+  const [capacity, setCapacity] = useState(0);
+  const [mobileNumber, setMobileNumber] = useState(0);
   const [editing, setEditing] = useState(false);
-  const {user} = useAuthStore();
-  console.log(user);
+  const {user,updateDriverProfile,updateUserProfile} = useAuthStore();
+  const navigate = useNavigate();
+
   
+  const handleUpdateDriver = async() => { 
+    try {
+      await updateDriverProfile(vehicleType, vehicleNumber, capacity, mobileNumber);
+      setEditing(false);
+      navigate(0);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleUpdateUser = async() => {
+    try {
+      await updateUserProfile(mobileNumber);
+      setEditing(false);
+      navigate(0);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   
   return (
     <motion.div 
@@ -57,7 +82,18 @@ export default function UpdateProfile() {
                 </div>
               </div>
 
-              <button onClick={() => setEditing(!editing)} className=" bg-gray-200  px-6">
+              <button
+                onClick={() => {
+                  if (editing && user?.user?.role === "driver") {
+                    handleUpdateDriver();
+                  } else if (editing && user?.user?.role === "student") {
+                    handleUpdateUser();
+                  }else {
+                    setEditing(true);
+                  }
+                }}
+                className="bg-gray-200 px-6"
+              >
                 {editing ? "Save" : "Edit"}
               </button>
             </div>
@@ -66,7 +102,7 @@ export default function UpdateProfile() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <label className="block mb-1 font-medium">{user?.user?.mobileNumber}</label>
-                <input className='p-2 outline-none' placeholder="mobile number" disabled={!editing} />
+                <input className='p-2 outline-none' onChange={(e)=>setMobileNumber(Number(e.target.value))} placeholder="mobile number" disabled={!editing} />
               </div>
 
                 {
@@ -74,15 +110,15 @@ export default function UpdateProfile() {
                         <>
                             <div>
                                 <label className="block mb-1 font-medium">{user?.user?._doc?.vehicleType}</label>
-                                <input placeholder="vehicle type" disabled={!editing} />
+                                <input onChange={(e)=>setVehicleType(e.target.value)}  placeholder="vehicle type" disabled={!editing} />
                             </div>
                             <div>
                                 <label className="block mb-1 font-medium"> {user?.user?._doc?.vehicleNumber}</label>
-                                <input placeholder="vehicle number" disabled={!editing} />
+                                <input onChange={(e)=>setVehicleNumber(e.target.value)} placeholder="vehicle number" disabled={!editing} />
                             </div> 
                             <div>
                                 <label className="block mb-1 font-medium">{user?.user?._doc?.capacity}</label>
-                                <input placeholder="capacity" disabled={!editing} />
+                                <input onChange={(e) => setCapacity(Number(e.target.value))} placeholder="capacity" disabled={!editing} />
                             </div>
                         </> 
                     )
