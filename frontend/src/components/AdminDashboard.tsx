@@ -75,7 +75,7 @@ console.log(allBookings);
           onClick={() => setActiveTab("completed")}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
             activeTab === "completed"
-              ? "bg-red-600 text-white"
+              ? "bg-blue-600 text-white"
               : "bg-white shadow"
           }`}
         >
@@ -121,7 +121,7 @@ console.log(allBookings);
                     ● Active
                   </span>
                 ) : (
-                  <span className="text-red-600 text-sm font-medium">
+                  <span className="text-blue-600 text-sm font-medium">
                     ● completed
                   </span>
                 )}
