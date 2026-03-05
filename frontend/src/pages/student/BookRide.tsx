@@ -167,16 +167,16 @@ function BookRide() {
         <div className=''>
           <div className='flex gap-4 justify-between mb-4'>
             <button
-            onClick={() => setVehicleType("tricycle")}
+            onClick={() => setVehicleType("keke")}
             className={`px-4 py-2 rounded-lg flex ${
-              vehicleType === "tricycle"
+              vehicleType === "keke"
                 ? "bg-green-600 text-white"
                 : "bg-gray-100"
             }`}
             >
             <span>Keke</span>  <TruckElectric className="ml-2"/>
             </button>
-            {vehicleType === 'tricycle' ?<h2 className='font-semibold text-2xl' >&#8358; {rideMode === 'basic' ? "150" : 600}</h2>: ''}
+            {vehicleType === 'keke' ?<h2 className='font-semibold text-2xl' >&#8358; {rideMode === 'basic' ? "150" : 600}</h2>: ''}
           </div>
             <div className='flex justify-between gap-4'> 
               <button
