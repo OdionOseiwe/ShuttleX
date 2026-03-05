@@ -86,9 +86,18 @@ console.log(allBookings);
      {isLoading && 
         <div className="text-center text-gray-500">Loading rides...</div>
      }
+  
       <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
         <AnimatePresence mode="wait">
+            {paginatedRides.length === 0 && !isLoading && (
+              <div className="col-span-full text-center text-gray-500 py-10">
+                {activeTab === "confirmed"
+                  ? "Confirmed rides not found"
+                  : "Completed rides not found"}
+              </div>
+            )}
           {paginatedRides.map((ride: any) => (
+            
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
@@ -114,7 +123,6 @@ console.log(allBookings);
                 <strong>Vehicle number:</strong> {ride.driver?.vehicleNumber}
               </p>
               
-
               <div className="mt-4">
                 {ride.status === "confirmed" ? (
                   <span className="text-green-600 text-sm font-medium">
