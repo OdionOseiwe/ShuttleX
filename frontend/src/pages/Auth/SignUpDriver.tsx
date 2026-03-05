@@ -155,7 +155,7 @@ const SignupPageDriver: React.FC = () => {
               className="w-full p-3 mt-4 bg-gray-100 rounded-xl outline-none cursor-pointer
                     border-2 border-transparent focus:border-black focus:bg-white"
              value={vehicleType} onChange={handleSelectVehicleType} name="vehicle_type">
-                <option disabled>choose vehicle type</option>
+                <option value="" >choose vehicle type</option>
                 <option value="bus" >bus</option>
                 <option value="keke" >keke</option>
             </select>

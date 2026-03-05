@@ -134,6 +134,8 @@ export const login = async (req, res) => {
   }
 };
 
+
+// TODO: VIEW ACTIVE RIDES
 // ✅ Approve Driver (Admin only)
 export const approveDriver = async (req, res) => {
   try {

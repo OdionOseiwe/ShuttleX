@@ -16,19 +16,23 @@ type DriverStore = {
   rideBookedBoolean:boolean,
   showNotification: boolean,
   bookingId: null | any,
+  allBookings:[] | null,
   triggerNotification:(id:any) => void,
   hideNotification:() => void,
   bookRide: (
     startLat: number,
     startLng: number,
     destLat: number,
-    destLng: number
+    destLng: number,
+    vehicleType: string,
+    rideMode: string
   ) => Promise<void>;
   cancelRide: (id: any) => Promise<void>;
   acceptRide: (id: any) => Promise<void>;
   getBooking: (id: any) => Promise<void>;
   rejectRide: (id: any) => Promise<void>; 
   completeRide: (id: any) => Promise<void>;
+  getAllBooking: () => Promise<void>;
   resetRideState:() => void
 };
 
@@ -44,6 +48,7 @@ export const useBookStore = create<DriverStore>()(
       bookingId: null,
       cancellRideBoolean:false,
       rideBookedBoolean:false,
+      allBookings:null,
 
       triggerNotification: (id) => set({
         showNotification: true,
@@ -64,7 +69,7 @@ export const useBookStore = create<DriverStore>()(
           dropoff: null,
         }),
 
-      bookRide: async (startLat, startLng, destLat, destLng) => {
+      bookRide: async (startLat, startLng, destLat, destLng,vehicleType, rideMode) => {
         set({ error: null, isLoading: true, rideBookedBoolean:false });
 
         try {
@@ -73,6 +78,8 @@ export const useBookStore = create<DriverStore>()(
             startLng,
             destLat,
             destLng,
+            vehicleType,
+            rideMode
           });
           const booking = response.data?.msg?.booking;
 
@@ -180,6 +187,21 @@ export const useBookStore = create<DriverStore>()(
 
           set({
             isLoading: false,
+          });
+        } catch (error) {
+          set({ error:error, isLoading:true});
+          throw error
+        }
+      },
+
+      getAllBooking: async () => {
+        set({ error: null, isLoading: true });
+        try {
+          const response = await axios.get(
+            `${HOST_URL}/booking/bookings/all`
+          );
+          set({
+            isLoading: false, allBookings:response.data
           });
         } catch (error) {
           set({ error:error, isLoading:true});

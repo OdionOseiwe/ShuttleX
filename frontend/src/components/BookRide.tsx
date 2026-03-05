@@ -31,7 +31,7 @@ function BookRideComponent({
   return (
     <motion.div 
     initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0, transition:{duration:1.0} }}
-    className="md:w-1/3 h-fit border-2 border-gray-100 rounded-xl p-4">
+    className=" h-fit border-2 border-gray-100 rounded-xl p-4">
       <h1 className="font-bold text-2xl text-center">Book a ride</h1>
       <form>
         <select
@@ -71,7 +71,7 @@ function BookRideComponent({
           onClick={calculateRoute}
           className="w-full p-3 mt-4 bg-black text-white font-semibold rounded-xl"
         >
-          Request KeKe
+          Request ride
         </button>
       </form>
     </motion.div>

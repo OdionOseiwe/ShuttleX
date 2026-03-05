@@ -13,7 +13,8 @@ import Notification from '../../components/Notification';
 import { useBookStore } from "../../store/useBooking";
 import { useAuthStore } from '../../store/UserAuth';
 import { useBroadcastStore } from '../../store/useBroadcastStore';
-
+import AdminDashboard from '../../components/AdminDashboard';
+import { Bus, TruckElectric  } from 'lucide-react';
 // notify driver who accepted ride that user cancelled
 // notify user that driver cancelled accepted ride 
 // notify user that driver completed ride and change back to orginal page layout
@@ -26,6 +27,9 @@ const center = {
 function BookRide() {
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("");
+  const [rideMode, setRideMode] = useState<"basic" | "comfort" | "">("");
+  const [vehicleType, setVehicleType] = useState<"bus" | "tricycle" | "">("");
+
   const mapRef = useRef<any>(null)
   const originMarkerRef = useRef<any>(null);
   const destinationMarkerRef = useRef<any>(null);
@@ -59,12 +63,14 @@ function BookRide() {
       const travelTimeData = await travelTime.json();
 
       let objectTravel = travelTimeData.waypoints[0];
-      const bookingResult = await bookRide(pickupStop.lat, pickupStop.lon, dropoffStop.lat, dropoffStop.lon);
+      const bookingResult = await bookRide(pickupStop.lat, pickupStop.lon, dropoffStop.lat, dropoffStop.lon,vehicleType, rideMode);
       socket.emit("UserBooked", {
         userId: user?.user?._id, 
         objectTravel,
         pickupStop,
         dropoffStop,
+        vehicleType: vehicleType,
+        rideType: rideMode, 
         booking: bookingResult?.booking?._id,
         bookingDetails:bookingResult
       });
@@ -97,11 +103,12 @@ function BookRide() {
     return () => mapRef.current?.remove();
   }, []);
 
+  
   return (
     <div className="py-5 z-1">
      <SideBar/>
       <div className="md:flex md:px-20 px-5  m-2 md:space-x-8 mt-10">  
-        {/* FOR USERS to the the driverInfo on the frontend       */}
+        {/* FOR USERS to see the the driverInfo on the frontend       */}
         {
           rideAcceptedBroadcastData && <Driverinfo id={bookingId}/> 
         }
@@ -126,13 +133,78 @@ function BookRide() {
         {/* FOR USERS TO SEE ON LAND ON THE PAGE */}
         {
           user?.user?.role === "student" && !rideBookedBoolean &&
-            <BookRideComponent
-              selectedOrigin={selectedOrigin}
-              setSelectedOrigin={setSelectedOrigin}
-              selectedDestination={selectedDestination}
-              setSelectedDestination={setSelectedDestination}
-              calculateRoute={handleBooking}
-            />
+            <div className="md:w-1/3 space-y-4">
+
+      {/* Ride Mode Selection */}
+      <div className="border rounded-xl p-4 shadow-sm">
+        <h2 className="font-semibold mb-3">Choose Ride Type</h2>
+
+        <div className="flex gap-3">
+          <button
+            onClick={() => setRideMode("basic")}
+            className={`px-4 py-2 rounded-lg ${
+              rideMode === "basic" ? "bg-blue-600 text-white" : "bg-gray-100"
+            }`}
+          >
+            Basic
+          </button>
+
+          <button
+            onClick={() => setRideMode("comfort")}
+            className={`px-4 py-2 rounded-lg ${
+              rideMode === "comfort" ? "bg-blue-600 text-white" : "bg-gray-100"
+            }`}
+          >
+            Comfort
+          </button>
+        </div>
+      </div>
+
+      {/* Vehicle Selection */}
+      <div className="border rounded-xl p-4 shadow-sm">
+        <h2 className="font-semibold text-center mb-3">Choose Vehicle</h2>
+
+        <div className=''>
+          <div className='flex gap-4 justify-between mb-4'>
+            <button
+            onClick={() => setVehicleType("tricycle")}
+            className={`px-4 py-2 rounded-lg flex ${
+              vehicleType === "tricycle"
+                ? "bg-green-600 text-white"
+                : "bg-gray-100"
+            }`}
+            >
+            <span>Keke</span>  <TruckElectric className="ml-2"/>
+            </button>
+            {vehicleType === 'tricycle' ?<h2 className='font-semibold text-2xl' >&#8358; {rideMode === 'basic' ? "150" : 600}</h2>: ''}
+          </div>
+            <div className='flex justify-between gap-4'> 
+              <button
+                onClick={() => setVehicleType("bus")}
+                className={`px-4 py-2 flex rounded-lg ${
+                  vehicleType === "bus"
+                    ? "bg-green-600 text-white"
+                    : "bg-gray-100"
+                }`}
+              >
+              <span>Bus</span> <Bus className="ml-2"/>
+              </button>
+            {vehicleType === 'bus' ?<h2 className='font-semibold text-2xl' >&#8358; {rideMode === 'basic' ? "150" : 2700}</h2>: ''}
+            </div>
+        </div>
+      </div>
+
+      {/* Only show booking form when selections are made */}
+      {rideMode && vehicleType && (
+        <BookRideComponent
+          selectedOrigin={selectedOrigin}
+          setSelectedOrigin={setSelectedOrigin}
+          selectedDestination={selectedDestination}
+          setSelectedDestination={setSelectedDestination}
+          calculateRoute={handleBooking}
+        />
+      )}
+    </div>
         }
 
           <Notification
@@ -176,10 +248,17 @@ function BookRide() {
             duration={60000}
           />
 
-        <div
-          ref={mapContainerRef}
-          className="w-full h-[500px] rounded-xl"
-        />
+        {
+          user?.user?.role === "admin" && 
+          <AdminDashboard/>
+        }
+        {
+          (user?.user?.role === "driver" || user?.user?.role === "student") &&
+          <div
+            ref={mapContainerRef}
+            className="w-full h-[500px] rounded-xl"
+          />
+        }
       </div>
     </div>
   );

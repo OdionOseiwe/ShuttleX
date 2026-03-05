@@ -52,7 +52,9 @@ function App() {
       if (isVerified) {
         socket.emit("registerDriver", {
           _id: userId,
-          isVerified: true
+          isVerified: true,
+          vehicleType: user?.user?._doc?.vehicleType,
+
         });
       }
   }, [user]);

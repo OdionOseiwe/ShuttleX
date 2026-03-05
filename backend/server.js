@@ -23,6 +23,15 @@ const io = new Server(server, {
   }
 });
 
+// TODO: ABILITY TO CHOOSE BUS OR KEKE AS A STUDENT AND IT SHOULD BE SENT TO THE 
+// THE DRIVER FOR KEKE OR BUS
+// ADJUST THE LOCATION ADDRESS - DONE
+// ADMIN ACTIVE AND REJECTED RIDES DASHBOARD - DONE
+
+
+// ELIZAT@gmail.com password 1234567
+
+
 
 // Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -71,18 +80,29 @@ io.on("connection", (socket) => {
 
     if (driver.isVerified === true) {
       socket.join("verifiedDrivers");
-      console.log(`Verified driver joined verifiedDrivers: ${driverId}`);
+      console.log("about to register driver...");
+      console.log("driver",driver)
+      //  Join vehicle-specific room
+      if (driver.vehicleType) {
+        const vehicleRoom = `vehicle_${driver.vehicleType}`;
+        socket.join(vehicleRoom);
+        console.log(`Driver ${driverId} joined ${vehicleRoom}`);
+      }
     }
   });
 
   socket.on("UserBooked", (data) => {
     console.log("User booked a ride:", data);
-
-    const userId = data.userId;
-    data.userId = userId;
-
-    io.to("verifiedDrivers").emit("broadcastToVerifiedDrivers", data);
-    console.log("Broadcasted to all verified drivers");
+    
+    const { vehicleType } = data;
+    
+    if (!vehicleType) return;
+    
+    const vehicleRoom = `vehicle_${vehicleType}`;
+    
+    io.to(vehicleRoom).emit("broadcastToVerifiedDrivers", data);
+    
+    console.log(`Broadcasted only to ${vehicleRoom}`);
   });
 
   socket.on("rideAccept", (data) => {

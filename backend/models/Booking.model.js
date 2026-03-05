@@ -9,7 +9,9 @@ const bookingSchema =new mongoose.Schema({
   destination: {
     lat: { type: Number },
     lng: { type: Number },
-  },  
+  }, 
+  vehicleType: { type: String, enum: ["tricycle", "bus"], required: true },
+  rideMode: { type: String, enum: ["basic", "comfort"], required: true },
   status: { type: String, enum: ["pending", "confirmed", "completed", "cancelled", "rejected"], default: "pending" },
   createdAt: { type: Date, default: Date.now },
 });

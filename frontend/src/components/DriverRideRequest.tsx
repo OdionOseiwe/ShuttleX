@@ -29,6 +29,8 @@ function DriverRideRequest({}) {
       socket.emit("rideAccept", {
         userId: rideBookedbroadcastData.userId,
         bookingDetails: rideBookedbroadcastData,
+        vehicleType: rideBookedbroadcastData.vehicleType,
+        rideType: rideBookedbroadcastData.rideType,
         driver: response,
         driverId: user?.user?._id,
 
@@ -41,6 +43,19 @@ function DriverRideRequest({}) {
       toast.error(error?.response?.data?.msg);
     }
   };
+  const { rideType, vehicleType } = rideBookedbroadcastData;
+
+  let price = 0;
+
+  if (rideType === "comfort" && vehicleType === "keke") {
+    price = 600;
+  } else if (rideType === "comfort" && vehicleType === "bus") {
+    price = 2700;
+  } else if (rideType === "basic" && vehicleType === "keke") {
+    price = 150;
+  } else if (rideType === "basic" && vehicleType === "bus") {
+    price = 150; 
+  }
 
   return (
     <div className="md:w-1/3 m-auto mt-30  w-full border-2 border-gray-200 rounded-xl p-5 shadow-md bg-white">
@@ -80,7 +95,14 @@ function DriverRideRequest({}) {
 
         <div className="flex items-center gap-3">
           <WalletMinimal />
-          <p className="font-medium">₦{150}</p>
+          <p className="font-medium">₦
+            {price}
+            </p>
+        </div>
+        <div>
+          <p className="text-sm text-gray-600">
+            <strong>ride Type:</strong> {rideBookedbroadcastData.rideType}
+          </p>
         </div>
 
       </motion.div>

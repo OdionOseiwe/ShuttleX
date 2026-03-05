@@ -6,13 +6,15 @@ import Notification from "../models/Notifications.model.js";
 // ✅ Book a ride (Student)
 export const bookRide = async (req, res) => {
   try {
-    const { startLat, startLng, destLat, destLng } = req.body;
+    const { startLat, startLng, destLat, destLng,vehicleType,rideMode } = req.body;
 
     const booking = new Booking({
       studentId: req.userId,
       start: { lat: startLat, lng: startLng },
       destination: { lat: destLat, lng: destLng },
       status: "pending",
+      vehicleType,
+      rideMode,
     });
     await booking.save();
 
@@ -86,6 +88,8 @@ export const acceptBooking = async (req, res) => {
         driverId: driver._id,
         driverName: student.name,
         bookingId: booking._id,
+        vehicleType: booking.vehicleType,
+        rideMode: booking.rideMode,
       },
     });
 
@@ -281,15 +285,36 @@ export const getPendingBookings = async (req, res) => {
 // ✅ Get all bookings
 export const getAllBooking = async (req, res) => {
   try {
-    const booking = await Booking.find();
-    if (!booking.length)
-      return res.status(404).json({ success: false, msg: "No bookings found" });
-    return res.status(200).json({ success: true, msg: booking });
+    const bookings = await Booking.find();
+
+    if (!bookings.length) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "No bookings found" });
+    }
+
+    const enrichedBookings = await Promise.all(
+      bookings.map(async (booking) => {
+        const driver = await Driver.findById(booking.driverId);
+        const user = await User.findById(booking.studentId);
+        return {
+          ...booking.toObject(),
+          driver,
+          user,
+        };
+      })
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: enrichedBookings,
+    });
   } catch (error) {
     console.error("Error getting all bookings:", error);
-    return res
-      .status(500)
-      .json({ success: false, msg: "Error fetching bookings" });
+    return res.status(500).json({
+      success: false,
+      msg: "Error fetching bookings",
+    });
   }
 };
 
@@ -317,7 +342,6 @@ export const getBookingDetails = async (req, res) =>{
     if(!booking){
       return res.status(404).json({success: false, msg:"Booking not found"})
     }
-    return res.status(200).json({success:true, booking})
   } catch (error) {
     return res.status(404).json({success: false, msg:"Error while fetching booking details"})
   }

@@ -31,16 +31,19 @@ function Driverinfo({ id }: { id: any }) {
 
   const cancelRideByDriver = async () => {
     try {
-      console.log("ride to be rejected",rideData.id);
-      if (rideData.id) {
+      if (!rideData?.id) {
+        localStorage.clear();
+        return; // stops execution if id is not available
+      }
+      
         await rejectRide(rideData.id);
+
         socket.emit("driverRejectedRide",{
           userId: rideBookedbroadcastData.userId,
           driverId: user?.user?._id
         })
-      }
-      localStorage.clear();
-      
+        localStorage.clear();
+          
       // clean up functions for zustand
       resetRideState();
       resetBroadcast();
@@ -53,25 +56,29 @@ function Driverinfo({ id }: { id: any }) {
 
   const completeRideByDriver = async () => {
     try {
-      console.log("ride to be completed",rideData.id);
-      if(rideData.id){
-         await completeRide(rideData.id);
-        socket.emit("driverCompleteRide",{
-          userId: rideBookedbroadcastData.userId,
-          driverId: user?.user?._id
-        })
+      if (!rideData?.id) {
+        localStorage.clear();
+        return; // stops execution if id is not available
       }
 
+      await completeRide(rideData.id);
+
+      socket.emit("driverCompleteRide", {
+        userId: rideBookedbroadcastData.userId,
+        driverId: user?.user?._id,
+      });
+
       localStorage.clear();
-     
-      // clean up functions for zustand
+
       resetRideState();
       resetBroadcast();
-      toast.success("Ride completed")
 
-    } catch (error) {
+      toast.success("Ride completed");
+    } catch (error: any) {
       console.log(error);
-      toast.error(error.response.data.msg || "Error occured while completing ride"); 
+      toast.error(
+        error?.response?.data?.msg || "Error occurred while completing ride"
+      );
     }
   };
 
