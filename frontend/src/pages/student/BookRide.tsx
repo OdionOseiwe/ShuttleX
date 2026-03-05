@@ -28,7 +28,7 @@ function BookRide() {
   const [selectedOrigin, setSelectedOrigin] = useState("");
   const [selectedDestination, setSelectedDestination] = useState("");
   const [rideMode, setRideMode] = useState<"basic" | "comfort" | "">("");
-  const [vehicleType, setVehicleType] = useState<"bus" | "tricycle" | "">("");
+  const [vehicleType, setVehicleType] = useState<"bus" | "keke" | "">("");
 
   const mapRef = useRef<any>(null)
   const originMarkerRef = useRef<any>(null);
