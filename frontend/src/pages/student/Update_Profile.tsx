@@ -110,7 +110,14 @@ export default function UpdateProfile() {
                         <>
                             <div>
                                 <label className="block mb-1 font-medium">{user?.user?._doc?.vehicleType}</label>
-                                <input onChange={(e)=>setVehicleType(e.target.value)}  placeholder="vehicle type" disabled={!editing} />
+                                <select
+                                  className="w-full p-3 mt-4 bg-gray-100 rounded-xl outline-none cursor-pointer
+                                        border-2 border-transparent focus:border-black focus:bg-white"
+                                 value={vehicleType} disabled={!editing} onChange={(e)=>setVehicleType(e.target.value)}  name="vehicle_type">
+                                    <option value="" >choose vehicle type</option>
+                                    <option value="bus" >bus</option>
+                                    <option value="keke" >keke</option>
+                                </select>
                             </div>
                             <div>
                                 <label className="block mb-1 font-medium"> {user?.user?._doc?.vehicleNumber}</label>
