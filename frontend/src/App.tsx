@@ -99,12 +99,12 @@ function App() {
           } /> 
           {/* REMOVE PAYMENT LINK AFTER PAYMENT IS MADE */}
 
-          <Route path= '/signup' element= {<PaymentPending/>}/>
-          <Route path= '/signup/as-driver' element= {<PaymentPending/>}/>
+          <Route path= '/signup' element= {<SignupPage/>}/>
+          <Route path= '/signup/as-driver' element= {<SignupPageDriver/>}/>
 
-          <Route path= '/login' element= {<PaymentPending/>}/>
-          <Route path= 'notifications/detail/:_id' element= {<PaymentPending/>}/>
-          <Route path= 'requests/:id' element= {<PaymentPending/>}/>
+          <Route path= '/login' element= {<Signin/>}/>
+          <Route path= 'notifications/detail/:_id' element= {<NotificationDetails/>}/>
+          <Route path= 'requests/:id' element= {<DriverRideRequest/>}/>
           <Route path= '/payment-pending' element= {<PaymentPending/>}/>
         </Routes>
         <ToastContainer />
