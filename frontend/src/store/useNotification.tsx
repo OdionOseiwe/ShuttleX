@@ -4,8 +4,8 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 // Use VITE_BACKEND_URL or fallback
-const HOST_URL = import.meta.env.VITE_BACKEND_URL ;
-// const HOST_URL = "http://localhost:7000/TriRide/api"; 
+const HOST_URL = process.env.NODE_ENV === "production" ? import.meta.env.VITE_BACKEND_URL : "http://localhost:9000/TriRide/api" ; 
+
 
 type NotificationType ={
     _id:string,
